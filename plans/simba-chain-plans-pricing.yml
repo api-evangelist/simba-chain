@@ -1,0 +1,37 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Probed the provider's own site on 2026-08-27: https://simbachain.com/pricing/ -> HTTP 404,
+  https://simbachain.com/plans/ -> HTTP 404, and the full published page index in
+  https://simbachain.com/llms.txt (HTTP 200), which lists every public URL on the site and contains no
+  pricing, plans or packaging page. The documentation host's own index
+  (https://docs.simbachain.com/documentation/llms.txt, HTTP 200, 100 pages) likewise has no pricing
+  page.
+description: >-
+  SIMBA Chain publishes NO pricing. There is no plan table, no free tier, no self-serve sign-up and no
+  published rate card. Every commercial path on the site is a "Talk to Our Team" / "Contact Sales"
+  form, consistent with a defense- and enterprise-contract business (the company describes itself as
+  the largest blockchain provider to the U.S. Federal Government, and its platform is deployed
+  per-customer, with SIMBA_API_BASE_URL naming a customer's own Blocks instance). A buyer cannot
+  determine cost, quota or entitlement without a sales conversation.
+plan_count: 0
+pricing_model: contact-sales
+free_tier: false
+self_serve_signup: false
+plans: []
+evidence:
+  - url: https://simbachain.com/pricing/
+    status: 404
+  - url: https://simbachain.com/plans/
+    status: 404
+  - url: https://simbachain.com/llms.txt
+    status: 200
+    note: Site-wide page index published by the provider; no pricing/plans page listed.
+  - url: https://simbachain.com/contact/sales/
+    status: 200
+    note: The commercial entry point — a sales contact form.
+notes:
+  - >-
+    The SIMBA Build UI does have a "Subscriptions" concept, but it refers to event/notification
+    subscriptions (see asyncapi/simba-chain-subscriptions-webhooks.yml), NOT billing plans. Do not
+    read it as pricing.

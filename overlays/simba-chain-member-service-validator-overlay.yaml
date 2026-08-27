@@ -1,0 +1,53 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the SIMBA Blocks Authentication Service API
+  version: 1.0.0
+extends: openapi/simba-chain-member-service-validator-openapi.json
+x-generated: '2026-08-27'
+x-method: generated
+x-source: >-
+  Captures the enhancements API Evangelist derived around the verbatim spec fetched from
+  https://blocks.simbachain.com/api/member-service-validator/openapi.json on 2026-08-27. The saved
+  OpenAPI is byte-verbatim and is never mutated; everything we add lives here. Note the published
+  spec ships FastAPI's default info block (title "FastAPI", version "0.1.0"); the overlay records the
+  real service identity and the version its own /version endpoint returns.
+actions:
+- target: $
+  update:
+    servers:
+    - url: https://blocks.simbachain.com/api/member-service-validator
+      description: >-
+        SIMBA-hosted Blocks instance. The published spec carries no servers[] block; this host is the
+        one the spec was fetched from, and it is the host the sibling Member Service OpenAPI names as
+        its OAuth2 authorizationUrl/tokenUrl.
+    - url: https://{blocks_instance}/api/member-service-validator
+      description: Self-hosted or dedicated SIMBA Blocks instance.
+      variables:
+        blocks_instance:
+          default: blocks.simbachain.com
+          description: The Blocks server host, set as SIMBA_AUTH_BASE_URL in .simbachain.env.
+- target: $.info
+  update:
+    title: SIMBA Blocks Authentication Service (Member Service Validator)
+    x-apievangelist:
+      catalog: https://apis.io/simba-chain
+      provider: SIMBA Chain
+      maintainer: Kin Lane <kin@apievangelist.com>
+      artifacts:
+      - apis.yml
+      - authentication/simba-chain-authentication.yml
+      - scopes/simba-chain-scopes.yml
+      - conformance/simba-chain-conformance.yml
+      - well-known/simba-chain-openid-configuration.json
+      - well-known/simba-chain-jwks.json
+    x-service-version: 2.10.1
+    x-version-endpoint: https://blocks.simbachain.com/api/member-service-validator/version
+    x-note: >-
+      info.title/version in the published document are FastAPI defaults, not authored metadata. The
+      live GET /version endpoint returns "2.10.1", matching the Member Service.
+- target: $.paths['/oauth/vc-secure-session'].post
+  update:
+    x-standards:
+    - W3C Decentralized Identifiers (DID) Core — request body field registrant_did_id
+    - W3C Verifiable Credentials Data Model — response schema VPChallenge (Verifiable Presentation challenge)
+    - RFC 9449 OAuth 2.0 Demonstrating Proof of Possession — optional `dpop` request header

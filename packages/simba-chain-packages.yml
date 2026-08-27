@@ -1,0 +1,204 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/developer-resources/simba-sdks and
+  https://github.com/SIMBAChain, with every version and release date read from the
+  registry metadata endpoints (registry.npmjs.org, pypi.org/pypi/<pkg>/json,
+  api.nuget.org registration index, search.maven.org solrsearch) on 2026-08-27.
+description: >-
+  First-party SIMBA Chain client libraries, web3 plugins and helper packages. SIMBA
+  documents five SDKs (Python, Java, .NET, JavaScript, TypeScript) plus Hardhat and
+  Truffle CLI plugins. CURRENCY IS THE FINDING HERE: only the Python line is alive.
+  libsimba (PyPI) shipped 1.9.0 on 2026-06-10 and the newer simba-sdk shipped 1.3.7
+  on 2026-01-22, and three UI libraries for the DID/VC surface published in Feb 2026 —
+  but the documented Java SDK last released 2023-09-06, the TypeScript SDK 2023-03-13,
+  the Hardhat plugin 2024-01-09, the Truffle plugin 2023-05-01, and the .NET SDK
+  (libSimba.Net) 2019-10-01, seven years behind the platform it wraps. The JavaScript
+  SDK repo (libsimba-js) is ARCHIVED on GitHub while the docs still list a JavaScript
+  SDK page.
+packages:
+  - language: python
+    registry: pypi
+    name: libsimba
+    url: https://pypi.org/project/libsimba/
+    source: https://github.com/SIMBAChain/libsimba
+    install: pip3 install libsimba
+    docs: https://docs.simbachain.com/documentation/developer-resources/simba-sdks/python-sdk
+    official: true
+    version: 1.9.0
+    published: '2026-06-10'
+    note: Core Python SIMBA Blocks client; the most actively maintained first-party SDK.
+  - language: python
+    registry: pypi
+    name: simba-sdk
+    url: https://pypi.org/project/simba-sdk/
+    source: https://github.com/SIMBAChain/simba-sdk-for-python
+    install: pip3 install simba-sdk
+    official: true
+    version: 1.3.7
+    published: '2026-01-22'
+    note: >-
+      Newer generation Python SDK (SIMBA Ensure / credential surface). Referenced by
+      the Ensure SDK for Python docs section.
+  - language: python
+    registry: pypi
+    name: libsimba-eth
+    url: https://pypi.org/project/libsimba-eth/
+    source: https://github.com/SIMBAChain/libsimba-eth
+    install: pip3 install libsimba-eth
+    official: true
+    version: 0.1.10
+    published: '2024-03-23'
+    note: Ethereum signing/utility add-on for libsimba.
+  - language: python
+    registry: pypi
+    name: libsimba-utils
+    url: https://pypi.org/project/libsimba-utils/
+    source: https://github.com/SIMBAChain/libsimba-utils
+    install: pip3 install libsimba-utils
+    official: true
+    version: 0.1.3
+    published: '2022-12-13'
+  - language: java
+    registry: maven
+    name: com.simbachain:libsimba4j-platform
+    url: https://central.sonatype.com/artifact/com.simbachain/libsimba4j-platform
+    source: https://github.com/SIMBAChain/libsimba4j-platform
+    install: '<dependency><groupId>com.simbachain</groupId><artifactId>libsimba4j-platform</artifactId><version>1.0.8</version></dependency>'
+    docs: https://docs.simbachain.com/documentation/developer-resources/simba-sdks/java-sdk
+    official: true
+    version: 1.0.8
+    published: '2023-09-06'
+    note: Documented Java SDK; last Maven Central release nearly three years old.
+  - language: java
+    registry: maven
+    name: com.simbachain:libsimba4j
+    url: https://central.sonatype.com/artifact/com.simbachain/libsimba4j
+    source: https://github.com/SIMBAChain/libsimba4j
+    official: true
+    version: 0.1.13
+    published: '2021-09-08'
+    note: Predecessor to libsimba4j-platform.
+  - language: dotnet
+    registry: nuget
+    name: libSimba.Net
+    url: https://www.nuget.org/packages/libSimba.Net
+    source: https://github.com/SIMBAChain/libsimba.net
+    install: dotnet add package libSimba.Net
+    docs: https://docs.simbachain.com/documentation/developer-resources/simba-sdks/.net-sdk
+    official: true
+    version: 1.0.9
+    published: '2019-10-01'
+    note: >-
+      The docs still publish a ".NET SDK" page, but the package has not shipped since
+      2019 — the strongest abandonment signal in this set.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/simbats"
+    url: https://www.npmjs.com/package/@simbachain/simbats
+    source: https://github.com/SIMBAChain/SimbaTS
+    install: npm install @simbachain/simbats
+    docs: https://docs.simbachain.com/documentation/developer-resources/simba-sdks/typescript-sdk
+    official: true
+    version: 1.1.0
+    published: '2023-03-13'
+  - language: javascript
+    registry: npm
+    name: "@simbachain/libsimba-js"
+    url: https://www.npmjs.com/package/@simbachain/libsimba-js
+    source: https://github.com/SIMBAChain/libsimba-js
+    install: npm install @simbachain/libsimba-js
+    docs: https://docs.simbachain.com/documentation/developer-resources/simba-sdks/javascript-sdk
+    official: true
+    version: 0.5.8
+    published: '2020-08-26'
+    note: GitHub repository is ARCHIVED; the docs still list a JavaScript SDK page.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/hardhat"
+    url: https://www.npmjs.com/package/@simbachain/hardhat
+    source: https://github.com/SIMBAChain/hardhat
+    install: npm install @simbachain/hardhat
+    docs: https://docs.simbachain.com/documentation/developer-resources/plugins/hardhat
+    official: true
+    version: 5.2.0
+    published: '2024-01-09'
+    note: Hardhat CLI plugin — the recommended web3 toolchain integration.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/truffle"
+    url: https://www.npmjs.com/package/@simbachain/truffle
+    source: https://github.com/SIMBAChain/truffle
+    install: npm install @simbachain/truffle
+    docs: https://docs.simbachain.com/documentation/developer-resources/plugins/truffle
+    official: true
+    version: 6.1.0
+    published: '2023-05-01'
+    note: >-
+      Truffle plugin; SIMBA's own docs state Truffle/Ganache are being sunset by
+      Consensys and that SIMBA will deprioritize updates to this plugin.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/web3-suites"
+    url: https://www.npmjs.com/package/@simbachain/web3-suites
+    source: https://github.com/SIMBAChain/web3-suites-common
+    install: npm install @simbachain/web3-suites
+    official: true
+    version: 5.2.0
+    published: '2024-01-09'
+    note: Shared code imported by the Hardhat and Truffle plugins.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/simba-chain-vdr"
+    url: https://www.npmjs.com/package/@simbachain/simba-chain-vdr
+    source: https://gitlab.com/SIMBAChain/simba-enterprise-platform/ui/libraries/simba-chain-vdr
+    install: npm install @simbachain/simba-chain-vdr
+    official: true
+    version: 0.4.7
+    published: '2026-02-06'
+    note: Verifiable Data Registry utilities for the SIMBA Ensure DID surface.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/simba-chain-vc"
+    url: https://www.npmjs.com/package/@simbachain/simba-chain-vc
+    source: https://gitlab.com/SIMBAChain/simba-enterprise-platform/ui/libraries/simba-chain-vc
+    install: npm install @simbachain/simba-chain-vc
+    official: true
+    version: 0.3.10
+    published: '2026-02-08'
+    note: Signs W3C Verifiable Credentials and builds Verifiable Presentations.
+  - language: typescript
+    registry: npm
+    name: "@simbachain/simba-chain-dpop"
+    url: https://www.npmjs.com/package/@simbachain/simba-chain-dpop
+    source: https://gitlab.com/SIMBAChain/simba-enterprise-platform/ui/libraries/simba-chain-dpop
+    install: npm install @simbachain/simba-chain-dpop
+    official: true
+    version: 0.2.5
+    published: '2026-02-08'
+    note: >-
+      OAuth 2.0 DPoP (RFC 9449) proof utilities — matches the optional `dpop` header on
+      POST /oauth/vc-secure-session in the authentication OpenAPI.
+  - language: typescript
+    registry: vscode-marketplace
+    name: simbachain-vscode-extension
+    url: https://github.com/SIMBAChain/simbachain-vscode-extension
+    source: https://github.com/SIMBAChain/simbachain-vscode-extension
+    official: true
+    version: null
+    published: null
+    note: >-
+      First-party VS Code extension repository (last pushed 2023-01-24). Not resolvable
+      to a published Visual Studio Marketplace listing at probe time, so no version or
+      release date can be recorded — checked, nothing to record.
+registries_absent:
+  - registry: rubygems
+    note: No first-party Ruby client published.
+  - registry: packagist
+    note: No first-party PHP client published.
+  - registry: crates.io
+    note: No first-party Rust client published.
+  - registry: pkg.go.dev
+    note: >-
+      Release notes mention an internal "Golang SDK" (Blocks v23.8.1, "Upgraded the
+      Golang SDK to use the Django oAuth toolkit") but no public Go module is published.

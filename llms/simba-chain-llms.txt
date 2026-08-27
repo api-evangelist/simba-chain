@@ -1,0 +1,100 @@
+# SIMBA Blocks Documentation
+
+## SIMBA Blocks Documentation
+
+- [Welcome to SIMBA](https://docs.simbachain.com/documentation/readme.md): The future of secure enterprise data management.
+- [SIMBA Overview](https://docs.simbachain.com/documentation/getting-started/platform-block.md): Learn about the SIMBA product suite.
+- [Writing a Smart Contract](https://docs.simbachain.com/documentation/getting-started/writing-a-smart-contract.md): Learn how to write your first smart contract using the Blocks dashboard.
+- [Funding a Wallet](https://docs.simbachain.com/documentation/getting-started/funding-a-wallet.md): Learn how to fund a wallet in SIMBA Blocks.
+- [Creating an App](https://docs.simbachain.com/documentation/getting-started/creating-an-app.md): Learn how to create your first app on SIMBA Build.
+- [Obtaining API Keys](https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys.md): Learn how to access your API Keys through the SIMBA Build dashboard.
+- [Viewing an App's API](https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator.md): Learn about how to use an app's dynamically generated APIs.
+- [Using SwaggerUI](https://docs.simbachain.com/documentation/getting-started/using-swaggerui.md): Learn how to interact with your smart contract's API Endpoints using the SwaggerUI.
+- [Quickstart Guides](https://docs.simbachain.com/documentation/getting-started/quickstart-guides.md)
+- [API Quickstart](https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart.md): Learn how to get started with SIMBA API using this quick start guide.
+- [Build UI Getting Started Guide](https://docs.simbachain.com/documentation/getting-started/quickstart-guides/getting-started.md): Learn the basics to getting started with the SIMBA Build UI.
+- [CLI Quickstart](https://docs.simbachain.com/documentation/getting-started/quickstart-guides/cli-quickstart.md): Learn how to get started using one of the Blocks CLI Tools.
+- [SDK Quickstart](https://docs.simbachain.com/documentation/getting-started/quickstart-guides/sdk-quickstart.md): Learn how to get started using one of the Blocks SDKs.
+- [Managing an Organization](https://docs.simbachain.com/documentation/simba-build/managing-an-organization.md): Learn how to manage a Blocks organization.
+- [User Roles and Permissions](https://docs.simbachain.com/documentation/simba-build/managing-an-organization/user-roles-and-permissions.md): Learn about user roles and permissions.
+- [Subscriptions](https://docs.simbachain.com/documentation/simba-build/subscriptions.md): Learn about SIMBA Build notification subscriptions.
+- [Supported Blockchains](https://docs.simbachain.com/documentation/simba-build/supported-blockchains.md): Learn about utilizing full chain freedom with SIMBA.
+- [Ethereum](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/ethereum.md): Learn about Ethereum.
+- [Getting Started with Ethereum](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/ethereum/getting-started-with-ethereum.md): Learn how to get started with Ethereum on SIMBA.
+- [Hyperledger Fabric](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/hyperledger-fabric.md): Learn about Hyperledger Fabric.
+- [Getting Started with Hyperledger Fabric](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/hyperledger-fabric/getting-started-with-hyperledger-fabric.md): Learn how to get started with Hyperledger Fabric on Blocks.
+- [Polygon](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/polygon.md): Learn about Polygon on SIMBA.
+- [Getting Started with Polygon](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/polygon/getting-started-with-polygon.md): Learn how to get started with Polygon on SIMBA.
+- [Quorum](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/quorum.md): Learn about Quorum on SIMBA.
+- [Getting Started with Quorum](https://docs.simbachain.com/documentation/simba-build/supported-blockchains/quorum/getting-started-with-quorum.md): Learn how to get started with Quorum on SIMBA
+- [File Bundles (\_bundleHash)](https://docs.simbachain.com/documentation/simba-build/file-bundles-_bundlehash.md)
+- [FAQ](https://docs.simbachain.com/documentation/simba-build/faq.md)
+- [Deploying Smart Contracts](https://docs.simbachain.com/documentation/smart-contracts/deploying-smart-contracts.md): Learn about how to deploy smart contracts on Blocks.
+- [Deploy Smart Contracts Programmatically](https://docs.simbachain.com/documentation/smart-contracts/deploying-smart-contracts/how-to-write-and-deploy-your-first-smart-contract-1.md): Learn how to write and deploy your first smart contract Programmatically with SIMBA Build.
+- [Linked Library Dependencies](https://docs.simbachain.com/documentation/smart-contracts/deploying-smart-contracts/how-to-deploy-a-contract-with-a-library-dependency-linked-library.md): SIMBA Build makes it easy to deploy a contract with a library dependency
+- [Smart Contract Designer](https://docs.simbachain.com/documentation/smart-contracts/smart-contract-designer.md): Learn about how to use the SIMBA Build Smart Contract Designer.
+- [Upgrading Smart Contracts](https://docs.simbachain.com/documentation/smart-contracts/upgrading-smart-contracts.md): Learn how to upgrade smart contracts on SIMBA.
+- [Smart Contract Examples](https://docs.simbachain.com/documentation/smart-contracts/smart-contract-examples.md)
+- [OpenZeppelin Standard Examples](https://docs.simbachain.com/documentation/smart-contracts/smart-contract-examples/openzeppelin-standard-examples.md): Learn about the OpenZeppelin Smart Contract standards.
+- [Supply Chain](https://docs.simbachain.com/documentation/smart-contracts/smart-contract-examples/supply-chain.md)
+- [Token Contracts](https://docs.simbachain.com/documentation/smart-contracts/create-your-own-token-contracts.md): There are a number of different types of token contract that can be created utilizing Platform Block
+- [ERC20 Tokens](https://docs.simbachain.com/documentation/smart-contracts/create-your-own-token-contracts/create-your-own-erc20-using-simba-platform-block.md): SIMBA Platform empowers you to create and deploy your own ERC20 Tokens.
+- [ERC1155 Tokens](https://docs.simbachain.com/documentation/smart-contracts/create-your-own-token-contracts/create-your-own-erc1155-using-simba-platform-block.md): SIMBA Platform empowers you to create and deploy your own ERC1155 tokens.
+- [ERC721 Tokens](https://docs.simbachain.com/documentation/smart-contracts/create-your-own-token-contracts/create-your-own-erc721-using-simba-platform-block.md): SIMBA Platform empowers you to create and deploy your own ERC721 token.
+- [Overview](https://docs.simbachain.com/documentation/simba-ensure/overview.md): Learn about SIMBA Ensure.
+- [Decentralized Identifiers (DIDs)](https://docs.simbachain.com/documentation/simba-ensure/decentralized-identifiers-dids.md): Learn about how to create a decentralized identity with SIMBA Ensure.
+- [Verifiable Credentials (VCs)](https://docs.simbachain.com/documentation/simba-ensure/verifiable-credentials-vcs.md): Learn about how to issue a verifiable credential using SIMBA Ensure.
+- [Verifiable Presentations (VPs)](https://docs.simbachain.com/documentation/simba-ensure/verifiable-presentations-vps.md): Learn about how to issue a verifiable presentation using SIMBA Ensure.
+- [SIMBA Secure Assets](https://docs.simbachain.com/documentation/simba-ensure/simba-secure-assets.md): Learn how to use the SIMBA Secure Assets interface.
+- [Wallets](https://docs.simbachain.com/documentation/simba-ensure/wallet-and-transaction-signing.md): The different ways to utilize a wallet.
+- [Transaction Signing](https://docs.simbachain.com/documentation/simba-ensure/transaction-signing.md): Learn about transaction signing on SIMBA.
+- [Ensure SDK for Python](https://docs.simbachain.com/documentation/simba-ensure/ensure-sdk-for-python.md)
+- [Getting Started](https://docs.simbachain.com/documentation/simba-ensure/ensure-sdk-for-python/getting-started.md)
+- [SDK Usage Patterns](https://docs.simbachain.com/documentation/simba-ensure/ensure-sdk-for-python/sdk-usage-patterns.md)
+- [Extracting Assets](https://docs.simbachain.com/documentation/simba-insights/extracting-assets.md)
+- [Using Structured Data](https://docs.simbachain.com/documentation/simba-insights/using-structured-data.md): Learn about structured data.
+- [Storing Data Off-Chain](https://docs.simbachain.com/documentation/simba-insights/storing-data-off-chain.md): Learn about using off-chain storage when deploying contracts on Blocks.
+- [Uploading Files to Smart Contracts](https://docs.simbachain.com/documentation/simba-insights/storing-data-off-chain/uploading-files-to-smart-contracts.md): Learn how to upload files to smart contracts.
+- [Transaction Validation](https://docs.simbachain.com/documentation/simba-insights/transaction-validation.md): Learn about the SIMBA Insights transaction validation and resilience features.
+- [Querying Data](https://docs.simbachain.com/documentation/simba-insights/querying-data.md)
+- [Using the Explorer](https://docs.simbachain.com/documentation/simba-insights/querying-data/using-the-explorer.md)
+- [Using GraphQL](https://docs.simbachain.com/documentation/simba-insights/querying-data/using-graphql.md)
+- [Filtering Query Results](https://docs.simbachain.com/documentation/simba-insights/querying-data/filtering-query-results.md): Learn how to filter query data on SIMBA Insights.
+- [Overview](https://docs.simbachain.com/documentation/developer-resources/overview.md): Learn the difference between plugins such as Hardhat or Truffle and the SIMBA SDKs.
+- [Environmental Variables](https://docs.simbachain.com/documentation/developer-resources/environmental-variables.md): Learn about setting up your developer environmental variables for use with SIMBA.
+- [Plugins](https://docs.simbachain.com/documentation/developer-resources/plugins.md)
+- [Hardhat](https://docs.simbachain.com/documentation/developer-resources/plugins/hardhat.md): Learn how to use Hardhat with SIMBA.
+- [Truffle](https://docs.simbachain.com/documentation/developer-resources/plugins/truffle.md): Learn how to use Truffle with SIMBA Build.
+- [CI/CD](https://docs.simbachain.com/documentation/developer-resources/plugins/ci-cd.md): Continuous Integration (CI) and Continuous Delivery (CD)
+- [Postman](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman.md): A quick guide to getting started with Postman
+- [Enviornment Setup](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman/enviornment-setup.md)
+- [Basic Authentication](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman/how-to-basic-auth-with-postman.md): Learn how to create a collection in Postman and store an access token in a collection variable.
+- [Automate Authentication](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman/automate-authentication.md): Learn how to automate authentication on Postman with pre-request scripts.
+- [Import an App's Endpoints](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman/import-an-apps-endpoints.md)
+- [Postman Collection](https://docs.simbachain.com/documentation/developer-resources/getting-started-with-postman/postman-collection.md): Learn how to create a Postman collection to use with SIMBA.
+- [SIMBA SDKs](https://docs.simbachain.com/documentation/developer-resources/simba-sdks.md): Learn how to use the SIMBA SDKs for Python, Java, .NET and TypeScript.
+- [Java SDK](https://docs.simbachain.com/documentation/developer-resources/simba-sdks/java-sdk.md): Learn how to use the SIMBA Java SDK
+- [.NET SDK](https://docs.simbachain.com/documentation/developer-resources/simba-sdks/.net-sdk.md): Learn how to use the SIMBA SDK .NET.
+- [JavaScript SDK](https://docs.simbachain.com/documentation/developer-resources/simba-sdks/javascript-sdk.md): Learn how to use the SIMBA SDK for JavaScript.
+- [Python SDK](https://docs.simbachain.com/documentation/developer-resources/simba-sdks/python-sdk.md): Learn how to use the SIMBA SDK for Python.
+- [TypeScript SDK](https://docs.simbachain.com/documentation/developer-resources/simba-sdks/typescript-sdk.md): Learn how to use the SIMBA SDK TypeScript.
+- [Solidity Resources](https://docs.simbachain.com/documentation/developer-resources/solidity-resources.md): Learn about resources for Solidity development.
+- [API Reference](https://docs.simbachain.com/documentation/api-reference/api-reference.md): Learn more about the SIMBA Blocks Dynamic API.
+- [Common Error Codes](https://docs.simbachain.com/documentation/api-reference/common-error-codes.md): Common Error Codes for SIMBA.
+- [Release Notes](https://docs.simbachain.com/documentation/release-notes/release-notes.md): Stay up-to-date on the latest developments in SIMBA.
+
+
+---
+
+# Agent Instructions
+This documentation is published with GitBook. GitBook is the documentation platform designed so that both humans and AI agents can read, navigate, and reason over technical content effectively. Learn more at gitbook.com.
+
+## Querying This Documentation
+If you need additional information, you can query the documentation dynamically by asking a question.
+Perform an HTTP GET request on a page URL with the `ask` query parameter:
+```
+GET https://docs.simbachain.com/documentation/readme.md?ask=<question>
+```
+The question should be specific, self-contained, and written in natural language.
+The response will contain a direct answer to the question and relevant excerpts and sources from the documentation.
+Use this mechanism when the answer is not explicitly present in the current page, you need clarification or additional context, or you want to retrieve related documentation sections.

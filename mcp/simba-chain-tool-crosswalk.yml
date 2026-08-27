@@ -1,0 +1,99 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived by binding the live MCP tool list (mcp/simba-chain-mcp-tools.json, probed 2026-08-27)
+  against the two published OpenAPI contracts in openapi/ and the documented GraphQL query surface.
+  Every tool inputSchema is real — it came back from tools/list unauthenticated — and every REST
+  operationId cited was verified verbatim in the saved specs.
+purpose: >-
+  Record which of SIMBA's agent-facing tools are backed by a callable REST operation and which are
+  not. The finding is that they DO NOT OVERLAP AT ALL. SIMBA's MCP surface is documentation search;
+  SIMBA's REST surface is org/identity control plus a per-application dynamic contract API. An agent
+  connecting to the MCP endpoint can read the manual but cannot touch the platform, and everything
+  the platform does is rest_only.
+surfaces:
+  rest_openapi:
+    - path: openapi/simba-chain-member-service-openapi.json
+      base: https://blocks.simbachain.com/api/member-service
+      operations: 106
+      gated: false
+      note: Spec is anonymous; operations require an OAuth2 bearer token.
+    - path: openapi/simba-chain-member-service-validator-openapi.json
+      base: https://blocks.simbachain.com/api/member-service-validator
+      operations: 22
+      gated: false
+  rest_ungated_but_unpublished:
+    - base: https://blocks.simbachain.com/api/platform-service
+      note: >-
+        The dynamic contract API. No tenant-independent OpenAPI is published; the generated
+        definition is per-application and reachable only from an authenticated application overview
+        page. Anonymous probe of /api/platform-service/v2/ returned 401 missing-auth-header.
+  graphql:
+    endpoint: per-application, inside SIMBA Insights (App Overview -> GraphQL)
+    gated: true
+    note: >-
+      No public GraphQL URL is published and no anonymous introspection is possible — the schema is
+      generated from the smart contract deployed in a given application.
+  mcp:
+    url: https://docs.simbachain.com/documentation/~gitbook/mcp
+    gated: false
+    tools: 4
+crosswalk: []
+mcp_only:
+  - tool: searchDocumentation
+    reason: >-
+      Documentation full-text search. No public REST operation exposes the docs index; SIMBA's docs
+      are GitBook-hosted and the search backend is GitBook's, not SIMBA's API.
+  - tool: getPage
+    reason: >-
+      Fetches a documentation page as markdown. The nearest public equivalent is a plain HTTP GET of
+      <page-url>.md on docs.simbachain.com, which is not an operation in any OpenAPI.
+  - tool: askQuestion
+    reason: >-
+      Retrieval-augmented answer over the documentation corpus. Mirrors the documented
+      `GET <page>.md?ask=<question>&goal=<goal>` convention on docs.simbachain.com, which again is a
+      docs-host behaviour and not an OpenAPI operation.
+  - tool: sendFeedback
+    reason: Files a documentation issue with the GitBook project. No SIMBA REST equivalent.
+rest_only:
+  - group: Organisations
+    operations: [get_organisations_organisations__get, create_organisation_organisations__post, get_organisation_by_id_organisations__organisation_id__get, update_organisation_organisations__organisation_id__put, check_organisation_name_organisation_input_checks__post, remove_user_from_organisation_organisations__organisation_name__users__user_id__delete]
+    reason: No MCP tool covers organisation management.
+  - group: ClientCredentials
+    operations: [create_client_credential_organisations__organisation_name__client_credentials__post, get_client_credentials_organisations__organisation_name__client_credentials__get, revoke_client_credential_organisations__organisation_name__client_credentials__client_id__delete, refresh_client_credential_secret_organisations__organisation_name__client_credentials__client_id__refresh_put]
+    reason: >-
+      Creating and rotating the client_id/client_secret pairs an SDK authenticates with is REST-only.
+  - group: Users
+    operations: [get_organisation_users_organisations__organisation_name__users__get, whoami_user_accounts_whoami__get, get_user_account_user_accounts__user_account_id__get, update_account_user_accounts__user_account_id__put, delete_account_user_accounts__user_account_id__delete]
+    reason: No MCP tool covers user administration.
+  - group: Roles and Permissions
+    operations: [get_roles_roles__get, create_org_scoped_role_organisations__organisation_name__roles__post, get_permissions_permissions__get, get_identity_permissions_by_simba_id_identity__simba_id__permissions__get]
+    reason: No MCP tool covers RBAC.
+  - group: Invites
+    operations: [create_organisation_invite_organisations__organisation_name__invites__post, accept_invite_for_existing_user_invites__invite_id__accept_existing_put, reject_organisation_invite_invites__invite_id__reject_put, revoke_organisation_invite_organisations__organisation_name__invites__invite_id__delete]
+    reason: No MCP tool covers invitations.
+  - group: DeviceApps and DID registration
+    operations: [create_device_app_organisations__organisation_name__device_apps__post, create_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__post, get_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__registration_id__get]
+    reason: >-
+      Device app registration issues DIDs and Verifiable Credentials; no MCP tool reaches it.
+  - group: Authentication
+    operations: [get_access_token_oauth_token_post, authorize_oauth_authorize_get, get_jwks_oauth__well_known_jwks_get, openid_configuration_oauth__well_known_openid_configuration_get, get_vc_secure_session_oauth_vc_secure_session_post, userinfo_oauth_userinfo_get]
+    reason: OAuth/OIDC endpoints; deliberately not agent tools.
+  - group: TwoFactor and Passkeys
+    operations: [get_setup_account_security_2fa_setup_get, post_setup_verify_account_security_2fa_setup_verify_post, list_passkeys_account_security_passkeys_get, post_register_options_account_security_passkeys_register_options_post]
+    reason: Human-interactive credential enrolment; no MCP tool.
+  - group: Dynamic contract API
+    operations: []
+    reason: >-
+      Contract invocation, wallet creation, file bundles and subscriptions live on
+      /api/platform-service and have no published operationIds to bind to — the API is generated per
+      deployed application.
+coverage:
+  mcp_tools: 4
+  mcp_tools_bound_to_rest: 0
+  mcp_only: 4
+  rest_operations_published: 128
+  rest_operations_with_a_tool: 0
+  note: >-
+    Zero overlap. This is not a mapping gap in our derivation — the two surfaces address different
+    systems. Recorded honestly rather than forced into low-confidence rows.

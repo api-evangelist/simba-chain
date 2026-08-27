@@ -1,0 +1,98 @@
+generated: '2026-08-27'
+method: searched
+source: https://docs.simbachain.com/documentation/simba-build/subscriptions
+docs: https://docs.simbachain.com/documentation/simba-build/subscriptions
+type: Webhooks
+description: >-
+  SIMBA Blocks has a real event surface — Subscriptions — but publishes NO AsyncAPI document, so this
+  artifact captures the webhook/notification catalog from SIMBA's own documentation instead. A
+  subscription fires when a transaction is extracted from the blockchain and matches a filter. Three
+  delivery transports are supported out of the box: http(s) webhooks, mailto and SMS, plus custom
+  endpoints with custom message templates. Subscriptions are implicitly bound to an organisation.
+asyncapi_published: false
+asyncapi_probed:
+  - url: https://blocks.simbachain.com/asyncapi.json
+    status: 200
+    note: SPA catch-all HTML shell, not a document.
+  - url: https://docs.simbachain.com/documentation/llms.txt
+    status: 200
+    note: >-
+      The complete published documentation index — 100 pages — contains no AsyncAPI, event-catalog or
+      CloudEvents page.
+transports:
+  - name: http
+    description: HTTP(S) webhook POST to a subscriber-supplied endpoint.
+    field: endpoint
+  - name: mailto
+    description: Email notification.
+    field: endpoint
+  - name: sms
+    description: SMS notification.
+    field: endpoint
+  - name: custom
+    description: >-
+      Custom endpoints and custom message templates configured through NotificationConfig; the
+      Template entity in the member service holds the message templates.
+subscription_object:
+  fields:
+    id: UUID for the object.
+    created_on: Date time the database row was created.
+    updated_on: Date time the database row was last updated.
+    endpoint: The endpoint to notify. http(s), mailto and SMS are supported.
+    txn: >-
+      The transaction name — a method name for a contract method, an event name for a contract event,
+      'payment' for a payment, or 'constructor' for a contract deployment.
+    contract: >-
+      Optional. A deployed contract specified by its HTTP API name; required when the subscription is
+      to a contract method.
+    subscription_type: One of METHOD, CREATION, EVENT, PAYMENT.
+    auth_type: >-
+      The authentication type used when delivering the notification. Must match a configured
+      NotificationConfig auth_type, or be empty to use the default notification configuration.
+    filters: Array of {parameter, op, value} filters evaluated against the transaction.
+event_types:
+  - type: METHOD
+    trigger: A contract method was invoked.
+    txn_field: the method name
+    filterable_on: the method's input parameters, plus _sender
+  - type: EVENT
+    trigger: A Solidity/chaincode event associated with a contract was emitted.
+    txn_field: the event name
+    filterable_on: the event's parameters, plus _sender
+  - type: CREATION
+    trigger: A contract deployment transaction.
+    txn_field: constructor
+    filterable_on: the constructor inputs, plus _sender
+  - type: PAYMENT
+    trigger: A payment transaction.
+    txn_field: payment
+    filterable_on: [value, from, to, _sender]
+subscription_scopes:
+  - name: Application subscription
+    description: Created from Subscriptions -> Applications -> New Event; bound to an application, contract and method or event.
+  - name: Wallet subscription
+    description: Created from Subscriptions -> Wallets -> New Event; bound to a wallet account.
+  - name: Account subscription
+    description: Subscriptions were extended to include Accounts in Blocks v23.8.1.
+filter_operators:
+  strings: [exact, contains, icontains, startswith, endswith, in]
+  numbers: [equals, gt, gte, lt, lte, in]
+  boolean: [is]
+  universal_field: _sender (the transaction's from address; supported by every subscription type)
+prerequisites:
+  - Log in to the SIMBA dashboard.
+  - Select an organisation.
+  - Create an application.
+  - Create a smart contract.
+  - Deploy the created smart contract in the application.
+delivery_semantics:
+  signing: not documented
+  retries: not documented
+  ordering: not documented
+  note: >-
+    SIMBA documents no webhook signing scheme, no retry/backoff policy and no delivery-ordering
+    guarantee. A consumer cannot verify a delivered notification came from SIMBA except by the
+    configured auth_type on the NotificationConfig. Recorded as a gap, not inferred.
+gaps:
+  - No AsyncAPI (or CloudEvents) document is published for this surface.
+  - Subscription CRUD is performed in the UI in the documentation; release notes reference "subscription APIs" and breaking changes to "subscription-related endpoints" (Blocks v24.1.1), but no subscription endpoint is documented in the public API reference and none appears in either published OpenAPI.

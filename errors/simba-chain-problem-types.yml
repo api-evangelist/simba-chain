@@ -1,0 +1,269 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/api-reference/common-error-codes — SIMBA publishes a
+  complete numeric error-code reference for the Blocks platform API, captured verbatim below.
+  Enriched with the response shapes derived from the 4xx entries in
+  openapi/simba-chain-member-service-openapi.json and
+  openapi/simba-chain-member-service-validator-openapi.json.
+description: >-
+  SIMBA Blocks returns TWO distinct error envelopes depending on which service answers. The Django
+  platform service (the dynamic contract API) returns a JSON:API-shaped
+  {"errors":[{"title","status","code","detail"}]} array with SIMBA's own numeric code taxonomy. The
+  FastAPI member and authentication services return FastAPI's {"detail": ...} envelope, and 422
+  validation failures return {"detail":[{"loc","msg","type","input","ctx"}]}. Neither is RFC 9457
+  application/problem+json.
+format: vendor
+content_type: application/json
+rfc9457: false
+envelopes:
+  - service: platform-service (dynamic contract API, Django)
+    shape: '{"errors": [{"title": string, "status": string, "code": string, "detail": string}]}'
+    note: >-
+      A JSON:API-style errors array. `code` is SIMBA's numeric taxonomy below; `status` repeats the
+      HTTP status as a string.
+    example_source: https://docs.simbachain.com/documentation/api-reference/common-error-codes
+  - service: member-service and member-service-validator (FastAPI)
+    shape: '{"detail": string}  |  {"detail": [{"loc": [...], "msg": string, "type": string, "input": any, "ctx": object}]}'
+    schemas: [HTTPValidationError, ValidationError]
+    observed:
+      - status: 401
+        body: '{"detail": "missing-auth-header"}'
+        probe: 'GET https://blocks.simbachain.com/api/member-service/pingz (anonymous, 2026-08-27)'
+      - status: 404
+        body: '{"detail": "Not Found"}'
+        probe: 'GET https://blocks.simbachain.com/api/member-service/ (anonymous, 2026-08-27)'
+      - status: 404
+        body: '{"error": "resource not found"}'
+        probe: >-
+          GET https://blocks.simbachain.com/api/platform-service/openapi.json (anonymous, 2026-08-27)
+          — the gateway/platform 404 shape, distinct again from both envelopes above.
+status_codes_declared_in_openapi:
+  member_service: {200: 87, 201: 11, 204: 8, 422: 101}
+  member_service_validator: {200: 19, 201: 1, 422: 14}
+  note: >-
+    Neither published spec documents a single 4xx response other than 422 — no 401, 403, 404, 409 or
+    429 response is declared on any operation, although the services demonstrably return them. This
+    is a real contract-quality gap: an agent reading the spec cannot see the failure modes.
+problem_types:
+  - code: '99'
+    name: FRAMEWORK_ERROR
+    http: 500
+    title: Framework Error
+    category: general
+  - code: '1400'
+    name: BAD_REQUEST
+    http: 400
+    title: Bad Request
+    category: http
+  - code: '1401'
+    name: UNAUTHORIZED
+    http: 401
+    title: Unauthorized
+    category: http
+    remediation: Obtain a token from POST /oauth/token using the client_credentials grant.
+  - code: '1403'
+    name: FORBIDDEN
+    http: 403
+    title: Forbidden
+    category: http
+  - code: '1404'
+    name: NOT_FOUND
+    http: 404
+    title: Not Found
+    category: http
+  - code: '1405'
+    name: METHOD_NOT_ALLOWED
+    http: 405
+    title: Method Not Allowed
+    category: http
+  - code: '1406'
+    name: NOT_ACCEPTABLE
+    http: 406
+    title: Not Acceptable
+    category: http
+  - code: '1409'
+    name: CONFLICT
+    http: 409
+    title: Conflict
+    category: http
+  - code: '1415'
+    name: UNSUPPORTED_MEDIA_TYPE
+    http: 415
+    title: Unsupported Media Type
+    category: http
+  - code: '1429'
+    name: TOO_MANY_REQUESTS
+    http: 429
+    title: Too Many Requests
+    category: http
+    remediation: >-
+      Back off and retry. SIMBA publishes no numeric rate limit and documents no RateLimit-* or
+      Retry-After response headers — see rate-limits/simba-chain-rate-limits.yml.
+  - code: '2001'
+    name: NO_PERMISSIONS
+    http: 403
+    title: No permissions defined for the called method
+    detail: The application has permissions enabled, but no permissions are defined for the called method.
+    category: permission
+  - code: '2002'
+    name: NO_USER
+    http: 403
+    detail: You have made a request to a permissioned application, but have not specified a remote user.
+    category: permission
+    remediation: Send the txn-delegate header identifying the external user the transaction acts as.
+  - code: '2003'
+    name: METHOD_ACCESS_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to access this method.
+    category: permission
+  - code: '2004'
+    name: METHOD_ACCESS_STILL_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to access this method yet.
+    category: permission
+  - code: '2005'
+    name: METHOD_ACCESS_CURRENTLY_DENIED
+    http: 403
+    detail: Remote user's group no longer has permission to access this method.
+    category: permission
+  - code: '2006'
+    name: LISTING_TRANSACTIONS_DENIED
+    http: 403
+    detail: Listing transactions outside a method is not supported for permissioned Apps.
+    category: permission
+  - code: '2007'
+    name: WRITE_FILESYSTEM_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to write to the filesystem for this method.
+    category: permission
+  - code: '2008'
+    name: WRITE_BLOCKCHAIN_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to write to the blockchain for this method.
+    category: permission
+  - code: '2009'
+    name: WRITE_FILESYSTEM_METHOD_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to read to the filesystem for this method.
+    category: permission
+  - code: '2010'
+    name: WRITE_BLOCKCHAIN_METHOD_DENIED
+    http: 403
+    detail: Remote user's group does not have permission to read to the blockchain for this method.
+    category: permission
+  - code: '3001'
+    name: REPEAT_TRANSACTION
+    http: 400
+    detail: This transaction has already been sent to the blockchain, and cannot be resubmitted.
+    category: transaction
+    note: >-
+      This is SIMBA's de-facto duplicate-submission guard — the closest thing the platform has to an
+      idempotency contract. See conventions/simba-chain-conventions.yml.
+  - code: '3002'
+    name: UNKNOWN_CONTRACT_ERROR
+    http: 400
+    detail: Unknown contract.
+    category: transaction
+  - code: '3003'
+    name: INVALID_CONTRACT_ERROR
+    http: 400
+    detail: Invalid contract.
+    category: transaction
+  - code: '3004'
+    name: TRANSACTION_CREATION_ERROR
+    http: 500
+    detail: Transaction Creation Error.
+    category: transaction
+  - code: '3005'
+    name: TRANSACTION_SIGNING_ERROR
+    http: 500
+    detail: Transaction Signing Error.
+    category: transaction
+  - code: '3006'
+    name: TRANSACTION_SUBMISSION_ERROR
+    http: 500
+    detail: Transaction Submission Error.
+    category: transaction
+  - code: '3007'
+    name: CONTRACT_DEPLOY_ERROR
+    http: 500
+    detail: Contract Deployment Error.
+    category: transaction
+  - code: '3008'
+    name: INVALID_INPUT_ERROR
+    http: 400
+    detail: Invalid Input Error.
+    category: transaction
+  - code: '3009'
+    name: NONCE_TOO_LOW
+    http: 409
+    detail: Nonce too low.
+    category: transaction
+  - code: '3010'
+    name: ADDRESS_MISMATCH
+    http: 409
+    detail: Submitted address mismatch.
+    category: transaction
+  - code: '3011'
+    name: INVALID_ADDRESS_ERROR
+    http: 400
+    detail: Invalid Address Error.
+    category: transaction
+  - code: '3012'
+    name: RETRYABLE_TRANSACTION_ERROR
+    http: 503
+    detail: Retryable Transaction Error.
+    category: transaction
+    remediation: Safe to retry; SIMBA re-queues asynchronous transactions on recoverable errors.
+  - code: '3013'
+    name: CALL_NODE_ERROR
+    http: 500
+    detail: Call Node Error.
+    category: transaction
+  - code: '3014'
+    name: UNKNOWN_TRANSACTION_ERROR
+    http: 400
+    detail: Unknown Transaction Error.
+    category: transaction
+  - code: '3015'
+    name: INVALID_METADATA_ERROR
+    http: 500
+    detail: Invalid Metadata Error.
+    category: transaction
+  - code: '3016'
+    name: CONTRACT_TRANSACTION_NOT_FOUND_ERROR
+    http: 400
+    detail: Contract transaction not found. May still be processing. Try again shortly.
+    category: transaction
+    remediation: Poll again after a short delay; POST calls are asynchronous by default.
+  - code: '3017'
+    name: CONTRACT_METHODCALL_ERROR
+    http: 500
+    detail: Contract Method Call Error.
+    category: transaction
+  - code: '4001'
+    name: NO_BUNDLE_FOR_TRANSACTION
+    http: 400
+    detail: Transaction has no bundle.
+    category: bundle
+  - code: '4002'
+    name: FILE_NOT_SPECIFIED
+    http: 400
+    detail: File name or index is not specified.
+    category: bundle
+  - code: '4003'
+    name: BUNDLE_WRITE_ERROR
+    http: 500
+    detail: Bundle could not be written.
+    category: bundle
+  - code: '8002'
+    name: METADATA_GENERATION_ERROR
+    http: 400
+    title: Metadata Generation Error
+    category: compilation
+    detail: >-
+      Raised when a submitted Solidity contract declares a compiler version SIMBA does not support.
+    remediation: >-
+      Use one of the supported Solidity versions SIMBA lists — 0.4.24, 0.5.10, 0.5.12, 0.5.17, 0.6.3,
+      0.6.4, 0.6.9, 0.7.0, 0.7.6, 0.8.3, 0.8.9, 0.8.11, 0.8.14.

@@ -1,0 +1,66 @@
+generated: '2026-08-27'
+method: probed
+status: published
+source: >-
+  Live JSON-RPC probe on 2026-08-27: POST https://docs.simbachain.com/documentation/~gitbook/mcp
+  {"jsonrpc":"2.0","id":1,"method":"tools/list"} with Accept: application/json, text/event-stream
+  returned HTTP 200 text/event-stream carrying four tools with full inputSchemas. No credentials
+  were sent. Raw response saved to mcp/simba-chain-mcp-tools.json.
+description: >-
+  SIMBA Chain serves a live, anonymous, remote MCP endpoint from its own documentation host. It is
+  a DOCUMENTATION server, not a platform-control server: the four tools search, fetch, question and
+  report on the SIMBA Blocks documentation, and none of them reach the Blocks REST API, deploy a
+  contract, or read chain data. It is provided by GitBook, the platform SIMBA publishes its docs on,
+  and is reachable at both /~gitbook/mcp and /documentation/~gitbook/mcp (the former 307s to the
+  latter, so the /documentation/ form is canonical). No MCP server for the SIMBA Blocks platform
+  API itself was found on any host, in the SIMBAChain GitHub organization (62 repositories reviewed
+  2026-08-27), or on npm/PyPI.
+server:
+  name: simba-blocks-documentation
+  transport: http
+  url: https://docs.simbachain.com/documentation/~gitbook/mcp
+  auth: none
+  provider: GitBook (documentation platform), served on docs.simbachain.com
+  probed_status: 200
+  content_type: text/event-stream
+tools:
+  - name: searchDocumentation
+    inputs: [query]
+    description: >-
+      Search across the documentation to find relevant information, code examples, API references
+      and guides for SIMBA Blocks Documentation.
+  - name: getPage
+    inputs: [url]
+    description: >-
+      Fetch the full markdown content of a specific SIMBA Blocks documentation page. Accepts full
+      URLs such as https://docs.simbachain.com/documentation/api-reference/api-reference.
+  - name: askQuestion
+    inputs: [question, goal]
+    description: >-
+      Ask a natural-language question about SIMBA Blocks Documentation and get a synthesized answer
+      with links to the source pages.
+  - name: sendFeedback
+    inputs: [content, pageUrl, goal]
+    description: >-
+      Report an issue in the SIMBA Blocks documentation — outdated, contradictory or missing content
+      — so the team can fix it.
+deployment:
+  mode: remote
+  endpoint: https://docs.simbachain.com/documentation/~gitbook/mcp
+  auth: none
+  verified: probed
+  checked: '2026-08-27'
+  note: >-
+    An agent can call this URL right now with no credentials. There is no stdio package: no
+    @simbachain MCP package exists on npm and no MCP server repository exists in the SIMBAChain
+    GitHub organization, so `install` and `package` are deliberately absent.
+alternate_paths:
+  - path: https://docs.simbachain.com/~gitbook/mcp
+    status: 307
+    note: Redirects to the /documentation/ prefixed canonical endpoint.
+gaps:
+  - >-
+    No MCP surface exists for the SIMBA Blocks platform itself. The dynamic contract API, wallet
+    creation, subscriptions and GraphQL query surfaces are all reachable only over REST/GraphQL with
+    an OAuth client-credentials token; an agent that wants to deploy or invoke a contract must call
+    the REST API directly.

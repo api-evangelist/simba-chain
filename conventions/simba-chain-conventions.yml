@@ -1,0 +1,270 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/api-reference/api-reference,
+  /simba-insights/querying-data/filtering-query-results, /simba-insights/transaction-validation,
+  /smart-contracts/upgrading-smart-contracts, /simba-build/subscriptions,
+  /developer-resources/environmental-variables and /api-reference/common-error-codes; cross-checked
+  against openapi/simba-chain-member-service-openapi.json and
+  openapi/simba-chain-member-service-validator-openapi.json.
+description: >-
+  Cross-cutting request/response semantics for the SIMBA Blocks API surface. SIMBA runs two very
+  different kinds of API behind one host, and the conventions differ between them: a FastAPI control
+  plane (member service + authentication service, published as OpenAPI) and a Django dynamic contract
+  API generated per deployed smart contract (documented in prose, no tenant-independent spec).
+base_url:
+  hosted: https://blocks.simbachain.com
+  self_hosted: >-
+    SIMBA Blocks is deployed per customer as well as hosted. SIMBA_API_BASE_URL in .simbachain.env
+    (or simba.json) names the instance; SIMBA's own docs use https://simba-dev-api.platform.simbachain.com/
+    and "https://my.blocks.server" as illustrations. Treat the base as templated:
+    https://{blocks_instance}/api/{service}.
+  services:
+    member-service: /api/member-service
+    authentication: /api/member-service-validator
+    platform (dynamic contract API): /api/platform-service
+api_style: REST over HTTPS, JSON request and response bodies
+
+authentication:
+  scheme: OAuth 2.0 Bearer token
+  grants: [client_credentials, authorization_code, refresh_token]
+  credentials: >-
+    client_id / client_secret pairs ("Secret Key Pairs") minted per organisation, per application or
+    per user in the SIMBA Build UI, or via the Member Service ClientCredentials operations. The secret
+    is shown exactly once at creation.
+  env_vars: [SIMBA_AUTH_CLIENT_ID, SIMBA_AUTH_CLIENT_SECRET, SIMBA_AUTH_BASE_URL, SIMBA_API_BASE_URL, SIMBA_AUTH_PROVIDER, SIMBA_AUTH_REALM, SIMBA_HOME]
+  providers: [Blocks (default, AUTH_BASE_URL == API_BASE_URL), KeyCloak (SIMBA_AUTH_PROVIDER=KC with SIMBA_AUTH_REALM)]
+  discovery: well-known/simba-chain-openid-configuration.json
+  pkce: S256
+  dpop: >-
+    RFC 9449 DPoP is supported on the Verifiable-Presentation session endpoint (optional `dpop`
+    request header on POST /oauth/vc-secure-session) and shipped as @simbachain/simba-chain-dpop.
+  docs: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  detail: authentication/simba-chain-authentication.yml
+
+delegation:
+  header: txn-delegate
+  description: >-
+    On the dynamic contract API, `txn-delegate` names an external user identifier on whose behalf the
+    transaction is signed. The delegated user is opaque to Blocks — "just a string identifier with
+    which a blockchain account can be associated" — and requires the caller to hold delegation
+    permission for the organisation.
+  docs: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
+  related_header: txn-wallet
+  related_note: Introduced with the Hyperledger Fabric Blocks Listener (release Blocks v23.8.1).
+
+async_by_default:
+  supported: true
+  description: >-
+    All POST calls to the dynamic contract API are ASYNCHRONOUS by default — the call returns before
+    the transaction is mined. Adding the `sync` segment to the endpoint path makes the call
+    synchronous: POST v2/apps/{application}/sync/contract/{contract_name}/{method_name}/ (SIMBA's
+    docs write the async form as .../async/contract/...). Asynchronous transactions are re-queued on
+    recoverable errors.
+  polling: >-
+    Error 3016 CONTRACT_TRANSACTION_NOT_FOUND_ERROR explicitly means "may still be processing, try
+    again shortly" — the documented signal that an agent should poll rather than fail.
+  docs: https://docs.simbachain.com/documentation/api-reference/api-reference
+
+idempotency:
+  supported: false
+  mechanism: none
+  grade: partial
+  detail: >-
+    SIMBA publishes no Idempotency-Key header and no client-supplied idempotency token on any surface.
+    What it does have is a server-side duplicate guard: error 3001 REPEAT_TRANSACTION, "This
+    transaction has already been sent to the blockchain, and cannot be resubmitted" (HTTP 400). That
+    prevents an accidental double-write but gives the client no way to safely RETRY an ambiguous
+    request, because a retry after a timeout is indistinguishable from a duplicate. GET/HEAD are
+    inherently idempotent; PUT on the control plane replaces the whole resource and is idempotent.
+  docs: https://docs.simbachain.com/documentation/api-reference/common-error-codes
+
+pagination:
+  style: page-number (offset)
+  applies_to: member-service list operations
+  request_params:
+    page: integer, minimum 1, default 1
+    size: integer, minimum 1, maximum 100, default 50
+    order_by: string, default created_at
+  response_fields:
+    items: array of results
+    total: total matching records
+    page: current page number
+    size: page size
+    pages: total number of pages
+  source: >-
+    Derived from the Page_* schemas in openapi/simba-chain-member-service-openapi.json (13 paged
+    collection types) — fastapi-pagination shape.
+  contract_api_note: >-
+    The dynamic contract/transaction API paginates separately and is not covered by these Page_*
+    schemas.
+
+filtering:
+  style: bracketed filter parameters with dot-notation modifiers
+  applies_to: dynamic contract API (transaction query)
+  format: '?filter[FIELD]=VALUE and ?filter[FIELD.OPERATOR]=VALUE'
+  example: 'GET /v2/apps/myapp/contract/mycontract/comments?filter[inputs.post.gte]=1'
+  operators:
+    numbers: [lt, gt, lte, gte, equals, in]
+    strings: [exact, contains, icontains, startswith, endswith, in]
+    boolean: [is]
+  default_operator: exact
+  scope_note: >-
+    SIMBA warns that transaction inputs cannot be queried unless the request targets the
+    method-specific endpoint, and that a multi-method `in` clause errors when an input parameter is
+    absent from one of the methods.
+  docs: https://docs.simbachain.com/documentation/simba-insights/querying-data/filtering-query-results
+  control_plane_filtering: >-
+    The member service filters with plain query parameters instead (display_name, organisation_name,
+    user__id, order_by) — a second, incompatible filtering convention on the same host.
+
+query_surfaces:
+  rest: Transaction query endpoints under /v2/apps/{application}/contract/{contract}/{method}/
+  graphql: >-
+    SIMBA Insights renders a GraphQL query builder per application whose schema is generated from the
+    deployed contract's asset/transaction functions. No public GraphQL endpoint URL is published and
+    the schema is tenant-specific, so it cannot be introspected anonymously.
+  explorer: SIMBA Insights transaction explorer (UI)
+
+field_expansion:
+  supported: false
+  note: No expand/sparse-fieldset mechanism is documented on either surface.
+
+metadata:
+  supported: true
+  description: >-
+    Contract metadata (a generated JSON file of methods, events, parameter names/types, returns,
+    visibility and accessor flags) is what drives request validation and the generated API. Struct
+    types are declared in a `types` element and validated component-by-component; overloaded methods
+    carry an `overloads` element and the best match is chosen from the supplied parameter types.
+  docs: https://docs.simbachain.com/documentation/simba-insights/transaction-validation
+
+request_tracing:
+  request_id_header: null
+  note: >-
+    No request-id or correlation header is documented, and none was observed on anonymous responses
+    from blocks.simbachain.com (server: istio-envoy). Internally, release notes record an index added
+    on platform_models_transactions.request_id, so a request_id exists on the transaction record even
+    though it is not surfaced as a response header.
+
+versioning:
+  api_path_version: v2 (dynamic contract API path prefix /v2/apps/...)
+  service_version_endpoint: GET /version on both member-service and member-service-validator
+  observed_service_version: 2.10.1
+  platform_release_scheme: 'YY.N.P calendar releases (e.g. Blocks v24.1.1, v23.9.1, v23.8.1)'
+  header: none
+  detail: lifecycle/simba-chain-lifecycle.yml
+
+error_envelope:
+  platform_service: '{"errors": [{"title", "status", "code", "detail"}]}'
+  fastapi_services: '{"detail": ...}'
+  rfc9457: false
+  detail: errors/simba-chain-problem-types.yml
+
+rate_limit_signaling:
+  headers: []
+  status_on_exhaustion: 429
+  error_code: '1429 TOO_MANY_REQUESTS'
+  note: >-
+    SIMBA defines a 429 error code but publishes neither a numeric limit nor any RateLimit-* /
+    Retry-After response header. See rate-limits/simba-chain-rate-limits.yml.
+
+file_handling:
+  mechanism: File bundles
+  field: _bundleHash
+  description: >-
+    Files uploaded with a transaction are stored off-chain and referenced on-chain by the bundle hash
+    parameter `_bundleHash`; errors 4001-4003 cover the bundle surface.
+  docs: https://docs.simbachain.com/documentation/simba-build/file-bundles-_bundlehash
+
+dry_run_mode:
+  supported: false
+  grade: none
+  note: >-
+    No documented preview/simulate/dry-run mode. The closest is an accessor (getter) call, which
+    reads contract state without writing a transaction, and the Smart Contract Designer's compile
+    step, which validates a contract before deployment. Neither rehearses a write.
+
+reversibility:
+  grade: documented
+  summary: >-
+    SIMBA has two write surfaces with opposite reversibility properties, and this is the single most
+    important runtime fact for an agent operating it. Control-plane writes (organisations, users,
+    roles, credentials, invites) have real reversal operations. Blockchain writes have NONE, by
+    design, and SIMBA says so in its own documentation.
+  write_surfaces:
+    - surface: Blockchain transaction (dynamic contract API — POST to a contract method)
+      reversible: false
+      reversal_operation: null
+      window: null
+      evidence: >-
+        "By design, smart contracts are meant to be deployed on a blockchain to be preserved as an
+        immutable, permanent record. They are not intended to be updated, changed, or altered."
+        — https://docs.simbachain.com/documentation/smart-contracts/upgrading-smart-contracts
+      compensating_patterns:
+        - >-
+          Contract UPGRADE (not reversal): a new endpoint per contract iteration, a version constant
+          or parameter, or a proxy pattern that preserves existing data. All three move forward; none
+          undoes a submitted transaction.
+        - >-
+          A contract may implement its own pause switch (SIMBA's worked example exposes
+          pauseFunctions(bool)), which halts future writes but does not reverse past ones.
+        - >-
+          Error 3001 REPEAT_TRANSACTION blocks resubmission of an already-sent transaction.
+      agent_guidance: >-
+        Treat every successful contract POST as final. Because POSTs are asynchronous by default and
+        no idempotency key exists, an agent that retries a timed-out write risks either a duplicate
+        on-chain record or a 3001 rejection, and cannot tell which outcome it caused without querying
+        the transaction first.
+    - surface: Control plane (member service)
+      reversible: true
+      reversal_operations:
+        - action: Issue an API client credential
+          reversal: revoke_client_credential_organisations__organisation_name__client_credentials__client_id__delete
+          also: user_refresh_user_client_credential_secret_user_accounts__user_account_id__client_credentials__client_id__refresh_put
+          window: not stated
+        - action: Invite a user to an organisation
+          reversal: revoke_organisation_invite_organisations__organisation_name__invites__invite_id__delete
+          also: reject_organisation_invite_invites__invite_id__reject_put
+          window: >-
+            Not stated as a policy, but the Invite resource carries an `expires_at` field, so an
+            individual invite has a per-record expiry the API returns.
+        - action: Grant a role to a user or credential
+          reversal: remove_organisation_user_account_roles_organisations__organisation_name__users__user_account_id__roles_remove__delete
+          also: remove_organisation_client_credential_roles_organisations__organisation_name__client_credentials__client_id__roles_remove__delete
+          window: not stated
+        - action: Create a custom role
+          reversal: delete_custom_system_role_custom_system_roles__role_id__delete
+          also: delete_org_scoped_role_organisations__organisation_name__roles__role_id__delete
+          window: not stated
+        - action: Add a user to an organisation
+          reversal: remove_user_from_organisation_organisations__organisation_name__users__user_id__delete
+          window: not stated
+        - action: Attach an organisation to a domain
+          reversal: remove_domain_organisation_domains__domain_name__organisations__delete
+          window: not stated
+        - action: Enrol two-factor authentication
+          reversal: post_disable_account_security_2fa_disable_post
+          window: not stated
+        - action: Register a passkey
+          reversal: post_delete_passkey_account_security_passkeys__credential_pk__delete_post
+          window: not stated
+        - action: Delete a user account
+          reversal: null
+          window: null
+          note: >-
+            delete_account_user_accounts__user_account_id__delete has no documented restore
+            operation or retention window. Treat account deletion as irreversible.
+  grading_rationale: >-
+    Reversal paths exist and are named by operationId, but SIMBA publishes NO reversal WINDOW for any
+    of them — no "restore within N days", no retention policy. Under the 0.12.0 rubric that is
+    `documented` (0.4), not `verified` (1.0). No window was invented here.
+
+cross_links:
+  errors: errors/simba-chain-problem-types.yml
+  lifecycle: lifecycle/simba-chain-lifecycle.yml
+  authentication: authentication/simba-chain-authentication.yml
+  scopes: scopes/simba-chain-scopes.yml
+  rate_limits: rate-limits/simba-chain-rate-limits.yml
+  webhooks: asyncapi/simba-chain-subscriptions-webhooks.yml
+  conformance: conformance/simba-chain-conformance.yml

@@ -1,0 +1,94 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Baseline derived by 0-working/derive-oauth-scopes.py from
+  openapi/simba-chain-member-service-openapi.json, then upgraded from the provider's own live OpenID
+  Connect discovery document at
+  https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/openid-configuration
+  (HTTP 200, fetched 2026-08-27, saved verbatim to well-known/simba-chain-openid-configuration.json)
+  and from https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys and
+  /simba-build/managing-an-organization/user-roles-and-permissions
+docs: https://docs.simbachain.com/documentation/simba-build/managing-an-organization/user-roles-and-permissions
+description: >-
+  SIMBA does NOT use OAuth scopes to express API authorization. The OpenAPI declares an
+  authorizationCode flow with an EMPTY scopes map, and the authorization server advertises only the
+  three standard OIDC identity scopes. All real authorization is carried by SIMBA's own
+  role-and-permission model, resolved per identity at
+  GET /identity/{simba_id}/permissions/ and enforced by OPA middleware inside the platform
+  (Blocks v24.1.1: "Implemented OPA middleware AuthZ"). An integrator sizing least-privilege access
+  should read Roles and Permissions, not scopes.
+schemes:
+  - name: OAuth2AuthorizationCodeBearer
+    source: openapi/simba-chain-member-service-openapi.json
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+        tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
+        scopes_declared_in_spec: 0
+grant_types_supported: [authorization_code, refresh_token, client_credentials]
+code_challenge_methods_supported: [S256]
+scopes:
+  - name: openid
+    type: oidc-identity
+    description: Standard OpenID Connect scope requesting an ID token.
+    source: scopes_supported in the OIDC discovery document.
+  - name: email
+    type: oidc-identity
+    description: Releases the email and email_verified claims.
+    source: scopes_supported in the OIDC discovery document.
+  - name: profile
+    type: oidc-identity
+    description: Releases the profile claims (first_name, last_name, name).
+    source: scopes_supported in the OIDC discovery document.
+claims_supported:
+  - sub
+  - simba-id
+  - identity-urn
+  - simba_id
+  - identity_urn
+  - email
+  - email_verified
+  - first_name
+  - last_name
+  - name
+  - exp
+  - iat
+  - jti
+  - iss
+  - aud
+  - azp
+  - auth-flow
+  - auth-time
+  - typ
+  - fingerprint
+  - scope
+authorization_model:
+  mechanism: roles and permissions (RBAC with attribute-scoped permissions), not OAuth scopes
+  permission_shape:
+    fields: [name, description, service, resource, action, is_org_scoped, resource_attributes, urls, effect]
+    note: >-
+      A Permission is a service/resource/action triple with an allow-or-deny `effect`, optional
+      resource_attributes and the URL patterns it governs — closer to a policy statement than a scope.
+  role_kinds: [global, org-scoped, domain-scoped, custom]
+  role_inheritance: true
+  lookup_operations:
+    - get_permissions_permissions__get
+    - get_permission_permissions__permission_id__get
+    - get_identity_permissions_by_simba_id_identity__simba_id__permissions__get
+    - get_identities_permissions_identity_permissions__get
+    - get_roles_roles__get
+    - get_org_scoped_roles_organisations__organisation_name__roles__get
+  assignment_operations:
+    - update_organisation_user_account_roles_organisations__organisation_name__users__user_account_id__roles__put
+    - add_organisation_user_account_roles_organisations__organisation_name__users__user_account_id__roles_add__post
+    - remove_organisation_user_account_roles_organisations__organisation_name__users__user_account_id__roles_remove__delete
+    - update_client_credential_roles_organisations__organisation_name__client_credentials__client_id__roles__put
+    - update_device_app_roles_organisations__organisation_name__device_apps__device_app_name__roles__put
+  enforcement: OPA middleware (Open Policy Agent) inside the Blocks platform
+  docs: https://docs.simbachain.com/documentation/simba-build/managing-an-organization/user-roles-and-permissions
+application_level_permissions:
+  note: >-
+    The dynamic contract API adds a second, separate authorization layer: a "permissioned application"
+    checks a remote user's group against the method being called, which is what error codes 2001-2010
+    report (NO_PERMISSIONS, NO_USER, METHOD_ACCESS_DENIED, WRITE_BLOCKCHAIN_DENIED, and so on). See
+    errors/simba-chain-problem-types.yml.

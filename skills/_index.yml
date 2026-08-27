@@ -1,0 +1,36 @@
+generated: '2026-08-27'
+method: generated
+source: >-
+  Packaged Agent Skills generated from the two published SIMBA OpenAPI documents in ../openapi/.
+  EVERY step is grounded in an operationId verified verbatim in those specs (all 32 operationIds
+  referenced across these skills were checked programmatically on 2026-08-27); cross-cutting rules
+  cite ../conventions/, ../errors/, ../authentication/ and ../scopes/. SIMBA publishes no AGENTS.md
+  and no skills of its own — the complete documentation index at
+  https://docs.simbachain.com/documentation/llms.txt (100 pages) contains neither.
+scope_note: >-
+  These skills cover the CONTROL PLANE only — identity, tenancy, credentials, roles and device/DID
+  enrolment — because that is the whole of SIMBA's published contract. The flows SIMBA is actually
+  bought for (deploy a smart contract, invoke a contract method, query the transaction graph, create
+  a Digital Product Passport) run on the dynamic contract API, whose operationIds are generated per
+  deployed application. No skill was written for those: every operationId would have been invented.
+skills:
+  - file: simba-chain-authenticate-client-credentials.md
+    name: Get a SIMBA access token with client credentials
+    api: openapi/simba-chain-member-service-validator-openapi.json
+    operations: [get_access_token_oauth_token_post, whoami_user_accounts_whoami__get, openid_configuration_oauth__well_known_openid_configuration_get, get_jwks_oauth__well_known_jwks_get]
+  - file: simba-chain-provision-api-credential.md
+    name: Provision and rotate an organisation API credential
+    api: openapi/simba-chain-member-service-openapi.json
+    operations: [create_client_credential_organisations__organisation_name__client_credentials__post, update_client_credential_roles_organisations__organisation_name__client_credentials__client_id__roles__put, refresh_client_credential_secret_organisations__organisation_name__client_credentials__client_id__refresh_put, revoke_client_credential_organisations__organisation_name__client_credentials__client_id__delete]
+  - file: simba-chain-invite-user-to-organisation.md
+    name: Invite a user into a SIMBA organisation
+    api: openapi/simba-chain-member-service-openapi.json
+    operations: [create_organisation_invite_organisations__organisation_name__invites__post, get_organisation_invites_organisations__organisation_name__invites__get, resend_user_invite_organisations__organisation_name__invites__invite_id__resend_patch, revoke_organisation_invite_organisations__organisation_name__invites__invite_id__delete, accept_new_user_invite_invites__invite_id__accept_new_put]
+  - file: simba-chain-resolve-identity-permissions.md
+    name: Resolve what an identity is actually allowed to do
+    api: openapi/simba-chain-member-service-openapi.json
+    operations: [whoami_user_accounts_whoami__get, get_identity_permissions_by_simba_id_identity__simba_id__permissions__get, get_permissions_permissions__get, get_roles_roles__get]
+  - file: simba-chain-register-device-app-did.md
+    name: Register a device app and issue its DID credential
+    api: openapi/simba-chain-member-service-openapi.json
+    operations: [create_device_app_organisations__organisation_name__device_apps__post, create_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__post, get_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__registration_id__get, get_vc_secure_session_oauth_vc_secure_session_post]

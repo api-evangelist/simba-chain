@@ -1,0 +1,60 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the SIMBA Blocks Member Service API
+  version: 1.0.0
+extends: openapi/simba-chain-member-service-openapi.json
+x-generated: '2026-08-27'
+x-method: generated
+x-source: >-
+  Captures the enhancements API Evangelist derived around the verbatim spec fetched from
+  https://blocks.simbachain.com/api/member-service/openapi.json on 2026-08-27. The saved OpenAPI is
+  byte-verbatim and is never mutated; everything we add lives here.
+actions:
+- target: $
+  update:
+    servers:
+    - url: https://blocks.simbachain.com/api/member-service
+      description: >-
+        SIMBA-hosted Blocks instance. The published spec carries no servers[] block; this host is the
+        one the spec was fetched from and the one its own OAuth2 securityScheme names for
+        authorizationUrl/tokenUrl. SIMBA Blocks is also deployed per-customer, in which case the base
+        is that instance host (SIMBA_API_BASE_URL) with the same /api/member-service prefix.
+    - url: https://{blocks_instance}/api/member-service
+      description: Self-hosted or dedicated SIMBA Blocks instance.
+      variables:
+        blocks_instance:
+          default: blocks.simbachain.com
+          description: >-
+            The Blocks server host, set as SIMBA_API_BASE_URL in .simbachain.env per
+            https://docs.simbachain.com/documentation/developer-resources/environmental-variables
+- target: $.info
+  update:
+    x-apievangelist:
+      catalog: https://apis.io/simba-chain
+      provider: SIMBA Chain
+      maintainer: Kin Lane <kin@apievangelist.com>
+      artifacts:
+      - apis.yml
+      - authentication/simba-chain-authentication.yml
+      - scopes/simba-chain-scopes.yml
+      - conventions/simba-chain-conventions.yml
+      - conformance/simba-chain-conformance.yml
+      - errors/simba-chain-problem-types.yml
+      - data-model/simba-chain-data-model.yml
+      - lifecycle/simba-chain-lifecycle.yml
+      - packages/simba-chain-packages.yml
+      - mcp/simba-chain-mcp.yml
+      - well-known/simba-chain-well-known.yml
+    x-service-version: 2.10.1
+    x-version-endpoint: https://blocks.simbachain.com/api/member-service/version
+- target: $.components.securitySchemes.OAuth2AuthorizationCodeBearer
+  update:
+    x-openid-configuration: https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/openid-configuration
+    x-jwks-uri: https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/jwks
+    x-grant-types-supported: [authorization_code, refresh_token, client_credentials]
+    x-scopes-supported: [openid, email, profile]
+    x-code-challenge-methods-supported: [S256]
+    x-note: >-
+      The spec declares an empty scopes map. The authorization server's own OIDC discovery document
+      lists openid, email and profile; authorization inside SIMBA is carried by roles and permissions
+      (see the Roles/Permissions tags) rather than by OAuth scopes.

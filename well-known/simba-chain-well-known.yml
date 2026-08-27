@@ -1,0 +1,102 @@
+generated: '2026-08-27'
+method: probed
+source: >-
+  Live probes of the /.well-known/ discovery surface on every host in apis.yml —
+  the website host (simbachain.com), the documentation host (docs.simbachain.com)
+  and the API/application host (blocks.simbachain.com) — plus the service-prefixed
+  OIDC discovery path the authentication OpenAPI declares. Status is the HTTP code
+  observed at fetch time on 2026-08-27.
+description: >-
+  Root /.well-known/ discovery is absent on all three hosts. blocks.simbachain.com is
+  a single-page application that answers HTTP 200 with a 478-byte HTML shell for every
+  unknown path, including every /.well-known/* path — that is an SPA catch-all, not a
+  document, and it is recorded as a miss. SIMBA does, however, serve a REAL OpenID
+  Connect discovery document and JWKS, but behind its authentication service prefix
+  rather than at the host root, and both were fetched and saved verbatim.
+hosts:
+  - host: https://simbachain.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://docs.simbachain.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://blocks.simbachain.com
+    documents:
+      - path: /api/member-service-validator/oauth/.well-known/openid-configuration
+        status: 200
+        type: application/json
+        file: simba-chain-openid-configuration.json
+        note: >-
+          Real OIDC discovery document. issuer simba://authservice; grants
+          authorization_code, refresh_token, client_credentials; PKCE S256;
+          scopes openid, email, profile. Declared as the authorizationUrl/tokenUrl
+          host by the OAuth2 securityScheme in both saved OpenAPIs.
+      - path: /api/member-service-validator/oauth/.well-known/jwks
+        status: 200
+        type: application/json
+        file: simba-chain-jwks.json
+        note: One RSA RS256 signing key (4096-bit modulus), kid 2ecb858a-8f72-40b5-846c-a3f21eab4e43.
+      - path: /.well-known/security.txt
+        status: 200
+        type: text/html
+        note: SPA catch-all shell (478 bytes of HTML), not a security.txt. Not saved; treated as a miss.
+      - path: /.well-known/openid-configuration
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not a document. The real one is under /api/member-service-validator/oauth/.
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not a document. Not saved; treated as a miss.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not a document. Not saved; treated as a miss.
+      - path: /.well-known/api-catalog
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not a document. Not saved; treated as a miss.
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not a document. Not saved; treated as a miss.
+      - path: /.well-known/agent-card.json
+        status: 200
+        type: text/html
+        note: >-
+          SPA catch-all shell, NOT an A2A Agent Card — the body is the SIMBA Build HTML
+          shell, not a JSON object. No agent card artifact was written.
+      - path: /.well-known/agent.json
+        status: 200
+        type: text/html
+        note: SPA catch-all shell, not an agent card. No agent card artifact was written.

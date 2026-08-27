@@ -1,0 +1,211 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Derived from openapi/simba-chain-member-service-openapi.json and
+  openapi/simba-chain-member-service-validator-openapi.json (securitySchemes, schemas, parameters,
+  response media types), the live OIDC discovery document at
+  well-known/simba-chain-openid-configuration.json, and SIMBA's published documentation
+  (docs.simbachain.com) and government capability page (https://simbachain.com/government/, HTTP 200).
+description: >-
+  What the SIMBA Blocks contract actually declares, standard by standard. Read against the contract,
+  not against marketing prose: the OIDC and OAuth rows are confirmed by a served discovery document
+  and a served JWKS, and the decentralized-identity rows are confirmed by request/response schema
+  fields in the published OpenAPI rather than by a claim on a web page.
+standards:
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      components.securitySchemes.OAuth2AuthorizationCodeBearer declares an authorizationCode flow with
+      authorizationUrl https://blocks.simbachain.com/api/member-service-validator/oauth/authorize and
+      tokenUrl .../oauth/token. The authorization server implements authorization_code, refresh_token
+      and client_credentials grants (grant_types_supported in the discovery document) and the
+      OpenAPI for the validator declares AuthorizationCodeParams, ClientCredentialParams and
+      RefreshTokenParams request schemas.
+  - id: oidc
+    conforms: true
+    evidence: >-
+      A real OpenID Connect discovery document is served at
+      https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/openid-configuration
+      (HTTP 200, application/json, saved verbatim), advertising issuer simba://authservice,
+      response_types_supported [code], id_token_signing_alg_values_supported [RS256], a JWKS at
+      .../oauth/.well-known/jwks (HTTP 200, one RSA key), a userinfo endpoint and an end_session
+      endpoint. NOTE the deviation: the discovery document is NOT at the host root
+      /.well-known/openid-configuration, and `issuer` is the non-HTTPS URI simba://authservice, which
+      is not a valid OIDC issuer identifier — an off-spec value that will fail strict RP validation.
+  - id: pkce-rfc7636
+    conforms: true
+    evidence: code_challenge_methods_supported ["S256"] in the OIDC discovery document.
+  - id: rfc9449-dpop
+    conforms: partial
+    evidence: >-
+      POST /oauth/vc-secure-session accepts an optional `dpop` request header
+      (openapi/simba-chain-member-service-validator-openapi.json), and SIMBA publishes
+      @simbachain/simba-chain-dpop "Utilities for DPoP" (npm, 0.2.5, 2026-02-08). DPoP is not
+      advertised in the discovery document (no dpop_signing_alg_values_supported) and is not applied
+      to the ordinary token endpoint, so this is a scoped use rather than a full RFC 9449 profile.
+  - id: w3c-did-core
+    conforms: true
+    evidence: >-
+      DOMAIN STANDARD, declared in the contract. POST /oauth/vc-secure-session requires
+      GetVcSecureParams.registrant_did_id. The DeviceAppRegistration schema in
+      openapi/simba-chain-member-service-openapi.json carries registrant_did_id, registrant_did,
+      device_did_id, device_did, registrant_public_key_multicodec and device_public_key_multicodec —
+      multicodec-encoded public keys are the did:key/DID Core representation, not an ad-hoc field.
+      SIMBA Ensure documents DID creation at
+      https://docs.simbachain.com/documentation/simba-ensure/decentralized-identifiers-dids
+  - id: w3c-verifiable-credentials
+    conforms: true
+    evidence: >-
+      DOMAIN STANDARD, declared in the contract. DeviceAppRegistration carries vc_id and vc; the
+      authentication OpenAPI defines VPChallenge, VpParams and VpRefreshTokenParams and returns a
+      VPChallenge from POST /oauth/vc-secure-session — a Verifiable Presentation challenge used to
+      bind a DID-held credential to a session. SIMBA publishes @simbachain/simba-chain-vc ("Utilities
+      for signing VCs and creating VPs", 0.3.10, 2026-02-08) and @simbachain/simba-chain-vdr
+      (Verifiable Data Registry, 0.4.7, 2026-02-06). Docs:
+      https://docs.simbachain.com/documentation/simba-ensure/verifiable-credentials-vcs and
+      /verifiable-presentations-vps
+  - id: webauthn-fido2
+    conforms: true
+    evidence: >-
+      Passkey registration is a first-class surface: POST /account/security/passkeys/register/options
+      and /register/verify with a PasskeyRegisterVerifyRequest schema — the WebAuthn
+      options/attestation ceremony.
+  - id: rfc6238-totp
+    conforms: true
+    evidence: >-
+      TwoFactor operations expose TOTP setup, verify, disable, and recovery codes
+      (TotpSetupResponse, TotpCodeRequest, TotpRecoveryCodesResponse, and account fields
+      totp_enabled_at / totp_last_used_slot).
+  - id: erc20
+    conforms: true
+    evidence: >-
+      DOMAIN STANDARD for the token surface. SIMBA documents first-class ERC20 token contract
+      creation on Platform Block:
+      https://docs.simbachain.com/documentation/smart-contracts/create-your-own-token-contracts/create-your-own-erc20-using-simba-platform-block
+  - id: erc721
+    conforms: true
+    evidence: >-
+      DOMAIN STANDARD. ERC721 contract creation is documented, and SIMBA's own API Quickstart worked
+      example is an ERC721URIStorage contract using OpenZeppelin, exercising mint / ownerOf /
+      safeTransferFrom through the generated REST API.
+  - id: erc1155
+    conforms: true
+    evidence: >-
+      DOMAIN STANDARD. ERC1155 contract creation is documented at
+      /smart-contracts/create-your-own-token-contracts/create-your-own-erc1155-using-simba-platform-block
+  - id: openzeppelin-contracts
+    conforms: true
+    evidence: >-
+      SIMBA bundles OpenZeppelin standard contracts (/libs/openzeppelin/4.6.0/... appears in a
+      published error example) and documents an "OpenZeppelin Standard Examples" page.
+  - id: hyperledger-fabric
+    conforms: true
+    evidence: >-
+      Supported blockchain with its own listener and the txn-wallet header (Blocks v23.8.1 release
+      notes); documented at /simba-build/supported-blockchains/hyperledger-fabric
+  - id: evm-ethereum
+    conforms: true
+    evidence: Ethereum, Polygon and Quorum are documented supported chains under /simba-build/supported-blockchains
+  - id: graphql
+    conforms: partial
+    evidence: >-
+      SIMBA Insights ships a GraphQL query builder whose schema is generated per application from the
+      deployed contract. No public endpoint URL and no introspectable SDL is published, so
+      conformance cannot be verified against a schema. Docs:
+      /simba-insights/querying-data/using-graphql
+  - id: openapi
+    conforms: true
+    evidence: >-
+      Two OpenAPI 3.1.0 documents are served anonymously from the provider's own host
+      (/api/member-service/openapi.json, /api/member-service-validator/openapi.json), and the Blocks
+      platform auto-generates an OpenAPI + SwaggerUI per deployed application
+      (/getting-started/dynamic-api-generator).
+  - id: asyncapi
+    conforms: false
+    evidence: >-
+      SIMBA operates an event/notification surface (subscriptions to contract methods, events,
+      payments and deployments over http(s), mailto and SMS) but publishes no AsyncAPI document. See
+      asyncapi/simba-chain-subscriptions-webhooks.yml.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Errors use a JSON:API-shaped {"errors":[...]} array on the platform service and FastAPI's
+      {"detail": ...} on the member services. No application/problem+json media type appears in
+      either spec.
+  - id: json-api
+    conforms: partial
+    evidence: >-
+      The platform-service error envelope is JSON:API-shaped ({"errors":[{"title","status","code",
+      "detail"}]}) but the success payloads and the member-service surface are not JSON:API.
+  - id: idempotency
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header or client-supplied idempotency token on any surface; the only
+      duplicate protection is the server-side 3001 REPEAT_TRANSACTION rejection. See
+      conventions/simba-chain-conventions.yml.
+  - id: pagination
+    conforms: true
+    evidence: >-
+      Page-number pagination on member-service collections: page (min 1, default 1) and size
+      (min 1, max 100, default 50) query parameters returning {items,total,page,size,pages} —
+      13 Page_* schemas in the spec.
+  - id: rate-limit-headers
+    conforms: false
+    evidence: >-
+      A 429 / error 1429 TOO_MANY_REQUESTS is defined, but no RateLimit-*, X-RateLimit-* or
+      Retry-After header is documented and none was observed on anonymous responses.
+  - id: scim
+    conforms: false
+    evidence: >-
+      SIMBA has a substantial user/organisation/role/permission provisioning surface and a bulk user
+      import endpoint, but it uses its own schemas — no urn:ietf:params:scim:schemas:* URN, no /Users
+      or /Groups SCIM resource paths, no SCIM media type. An identity-provider integrator needs a
+      bespoke connector.
+  - id: odata
+    conforms: false
+    evidence: No $metadata surface or OData query options; filtering uses filter[FIELD.OP] and plain query params.
+  - id: fhir
+    conforms: false
+    evidence: Not a healthcare API.
+  - id: fapi
+    conforms: false
+    evidence: No Financial-grade API profile claim.
+  - id: psd2
+    conforms: false
+    evidence: Not a payments API.
+  - id: gs1-epcis
+    conforms: unknown
+    evidence: >-
+      SIMBA markets supply-chain traceability and EU Digital Product Passports, the domain where
+      GS1 Digital Link and EPCIS 2.0 are the interchange standards. Neither published contract
+      declares an EPCIS event shape or a GS1 identifier scheme, and the traceability data model is
+      whatever the customer's own smart contract defines. Recorded as unknown rather than false
+      because the tenant contract is not public; recorded rather than omitted because it is the one
+      domain standard a DPP buyer would ask about.
+compliance_and_accreditation:
+  published_certifications: []
+  note: >-
+    NO published certification. SIMBA does not publish a SOC 2 report, an ISO 27001 certificate, a
+    FedRAMP or StateRAMP authorization, a trust center, or a compliance page. Its government page
+    (https://simbachain.com/government/, HTTP 200) states experience "implementing, certifying, and
+    accrediting emerging technologies using" DoD Instruction 5000.87, Risk Management Framework,
+    NIST 800-53, NIST 800-207, CMMC, Cyber Network Defense Directives, DAAPM, JSIG, DCID and the
+    DevSecOps Reference Design. That is a statement of accreditation EXPERIENCE, not a certification
+    the company holds and publishes, so no Compliance pointer is emitted on its behalf.
+  frameworks_claimed_as_experience:
+    - DoD Instruction 5000.87
+    - Risk Management Framework (RMF)
+    - NIST SP 800-53
+    - NIST SP 800-207 (Zero Trust Architecture)
+    - CMMC
+    - DAAPM
+    - JSIG
+    - DCID
+    - DoD DevSecOps Reference Design
+  regulatory_context:
+    - name: EU Digital Product Passport (ESPR)
+      role: target market
+      evidence: >-
+        https://simbachain.com/digital-product-passport/ names EU DPP mandates for batteries (2027),
+        textiles (2027-2028) and electronics (2027+). This is the market SIMBA sells into, not a
+        conformance claim.

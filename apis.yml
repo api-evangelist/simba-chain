@@ -1,23 +1,220 @@
 aid: simba-chain
 name: SIMBA Chain
-description: 'SIMBA Chain is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  SIMBA Chain is a South Bend, Indiana enterprise data company spun out of the University of Notre Dame
+  under U.S. Department of Defense research funding. Its platform — marketed today as SIMBA Trace and
+  built on the SIMBA Blocks / Build / Ensure / Insights product suite — turns products, components,
+  assets, credentials and organizations into tamper-evident, cryptographically sealed records on
+  permissioned blockchains (Ethereum, Hyperledger Fabric, Polygon, Quorum) for supply-chain visibility,
+  traceability, digital thread and EU Digital Product Passport compliance. Developers deploy Solidity or
+  Chaincode smart contracts through SIMBA Build, which auto-generates a REST API (OpenAPI + SwaggerUI)
+  per application, plus a GraphQL query surface, event/notification subscriptions, and DID/Verifiable
+  Credential issuance through SIMBA Ensure. Customers include the U.S. Air Force, Boeing, the Defense
+  Logistics Agency and the Australian Defence Force.
+image: https://simbachain.com/wp-content/uploads/2024/01/SIMBA-Chain-logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/simba-chain/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-27'
 modified: '2026-08-27'
 tags:
 - Company
-apis: []
+- Blockchain
+- Supply Chain
+- Traceability
+- Digital Product Passport
+- Smart Contracts
+- Identity
+- Verifiable Credentials
+- Defense
+- Government
+- Data Management
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: simba-chain:simba-chain-member-service-api
+  name: SIMBA Blocks Member Service API
+  description: >-
+    The organization, user, role, permission and API-credential control plane behind SIMBA Build.
+    Creates and manages organisations, domains, invites, org-scoped and custom system roles, bulk user
+    imports, device apps and registrations, notification templates, passkeys and TOTP two-factor
+    enrolment, and the client_id / client_secret pairs the SIMBA SDKs authenticate with. OpenAPI 3.1.0,
+    106 operations across 74 paths, served publicly (unauthenticated spec, OAuth2-protected operations)
+    from SIMBA's own hosted Blocks instance.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Identity
+  - Organizations
+  - Users
+  - Roles
+  - Permissions
+  - Credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-member-service-openapi.json
+  - type: Overlay
+    url: overlays/simba-chain-member-service-overlay.yaml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+- aid: simba-chain:simba-chain-authentication-api
+  name: SIMBA Blocks Authentication Service API
+  description: >-
+    SIMBA's OAuth 2.0 / OpenID Connect authorization server and token validator (the "member service
+    validator"). Publishes an OIDC discovery document and a JWKS, issues tokens over the
+    authorization_code, refresh_token and client_credentials grants with PKCE S256, validates external
+    tokens for downstream services, and exposes a Verifiable-Presentation challenge endpoint
+    (/oauth/vc-secure-session) that binds a W3C DID to a session with an optional DPoP proof header.
+    OpenAPI 3.1.0, 22 operations across 15 paths.
+  humanURL: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  baseURL: https://blocks.simbachain.com/api/member-service-validator
+  tags:
+  - Authentication
+  - OAuth
+  - OpenID Connect
+  - Verifiable Credentials
+  - Decentralized Identifiers
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-member-service-validator-openapi.json
+  - type: Overlay
+    url: overlays/simba-chain-member-service-validator-overlay.yaml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-platform-service-api
+  name: SIMBA Blocks Platform Service (Dynamic Contract API)
+  description: >-
+    The SIMBA Build dynamic API generator. When a smart contract is deployed into an application, Blocks
+    auto-generates REST endpoints for every method and public variable of that contract — POST to invoke,
+    GET to query prior invocations — under /v2/apps/{application}/contract/{contract_name}/{method_name}/,
+    with a per-application OpenAPI definition and SwaggerUI rendered from the application's overview page.
+    Also carries wallet/account creation, file bundles (_bundleHash), off-chain storage, transaction
+    validation and the subscription/notification surface. Because the contract shape is generated per
+    deployed application, there is no single tenant-independent published OpenAPI; the generated
+    definition is reachable only inside an authenticated application. Probed anonymously 2026-08-27:
+    HTTP 401 {"detail":"missing-auth-header"}.
+  humanURL: https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator
+  baseURL: https://blocks.simbachain.com/api/platform-service
+  tags:
+  - Blockchain
+  - Smart Contracts
+  - Traceability
+  - Webhooks
+  properties:
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: GettingStarted
+    url: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
+  - type: Webhooks
+    url: asyncapi/simba-chain-subscriptions-webhooks.yml
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+- aid: simba-chain:simba-chain-documentation-mcp
+  name: SIMBA Blocks Documentation MCP Server
+  description: >-
+    A live, unauthenticated remote Model Context Protocol server published on SIMBA's own documentation
+    host. tools/list returns four tools — searchDocumentation, getPage, askQuestion and sendFeedback —
+    that let an agent search, read and ask questions of the SIMBA Blocks documentation. Provided by the
+    GitBook documentation platform SIMBA publishes on, and served from docs.simbachain.com.
+  humanURL: https://docs.simbachain.com/documentation
+  baseURL: https://docs.simbachain.com/documentation/~gitbook/mcp
+  tags:
+  - MCP
+  - Documentation
+  - Agents
+  properties:
+  - type: MCPServer
+    url: mcp/simba-chain-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/simba-chain-tool-crosswalk.yml
 common:
+- type: DomainSecurity
+  url: security/simba-chain-domain-security.yml
 - type: Website
-  url: https://www.nasdaqprivatemarket.com/
+  url: https://simbachain.com/
+- type: DeveloperPortal
+  url: https://docs.simbachain.com/documentation
+- type: Documentation
+  url: https://docs.simbachain.com/documentation
+- type: APIReference
+  url: https://docs.simbachain.com/documentation/api-reference/api-reference
+- type: GettingStarted
+  url: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
+- type: Quickstart
+  url: https://docs.simbachain.com/documentation/getting-started/quickstart-guides
+- type: Login
+  url: https://blocks.simbachain.com/
+- type: Support
+  url: https://simbachain.com/contact/
+- type: Blog
+  url: https://simbachain.com/news/
+- type: GitHubOrganization
+  url: https://github.com/SIMBAChain
+- type: TermsOfService
+  url: https://simbachain.com/terms-and-conditions/
+- type: PrivacyPolicy
+  url: https://simbachain.com/privacy/
+- type: ChangeLog
+  url: https://docs.simbachain.com/documentation/release-notes/release-notes
+- type: LLMsTxt
+  url: llms/simba-chain-llms.txt
+- type: Packages
+  url: packages/simba-chain-packages.yml
+- type: SDKs
+  url: packages/simba-chain-packages.yml
+- type: CLI
+  url: cli/simba-chain-cli.yml
+- type: MCPServer
+  url: mcp/simba-chain-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/simba-chain-tool-crosswalk.yml
+- type: WellKnown
+  url: well-known/simba-chain-well-known.yml
+- type: Authentication
+  url: authentication/simba-chain-authentication.yml
+- type: OAuthScopes
+  url: scopes/simba-chain-scopes.yml
+- type: Conventions
+  url: conventions/simba-chain-conventions.yml
+- type: Conformance
+  url: conformance/simba-chain-conformance.yml
+- type: ErrorCatalog
+  url: errors/simba-chain-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/simba-chain-lifecycle.yml
+- type: ChangeLog
+  url: changelog/simba-chain-changelog.yml
+- type: DataModel
+  url: data-model/simba-chain-data-model.yml
+- type: Webhooks
+  url: asyncapi/simba-chain-subscriptions-webhooks.yml
+- type: Plans
+  url: plans/simba-chain-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/simba-chain-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+
+x-enrichment:
+  date: '2026-08-27'
+  status: enriched
+  artifacts_added: 31
+  pass: local-v1

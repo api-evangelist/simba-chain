@@ -1,0 +1,73 @@
+generated: '2026-08-27'
+method: searched
+source: https://docs.simbachain.com/documentation/release-notes/release-notes
+docs: https://docs.simbachain.com/documentation/release-notes/release-notes
+description: >-
+  SIMBA publishes a dated "Release Notes" page for the Blocks platform, organised as collapsible
+  entries per calendar release with three sections each — New Features & Improvements, Upgrades &
+  Updates, Bug Fixes & Enhancements. THE FINDING IS THE GAP: the newest entry on the page is Blocks
+  v24.1.1, dated 22 January 2024. Nine entries are published, all between November 2022 and January
+  2024, and nothing has been added in the two and a half years since, even though the platform has
+  demonstrably moved on (the live member service reports version 2.10.1, the product has been
+  rebranded to SIMBA Trace on the website, and first-party packages shipped as recently as June 2026).
+  The changelog does not describe what is running.
+versioning:
+  scheme: calendar release (Blocks vYY.N.P)
+  header: none
+  current_published_entry: v24.1.1
+  current_published_date: '2024-01-22'
+  live_service_version: 2.10.1
+  live_service_version_source: https://blocks.simbachain.com/api/member-service/version (probed 2026-08-27)
+  note: >-
+    The Blocks vYY.N.P platform release number and the 2.10.1 member-service version are different
+    counters; no page reconciles them.
+breaking_change_policy:
+  published: false
+  note: >-
+    No deprecation or breaking-change policy is published. Breaking changes appear only as prose
+    inside release entries — e.g. v24.1.1 "UI was updated to address breaking changes on
+    subscription-related endpoints" and "UI was updated to address breaking changes on org endpoints"
+    — announced after the fact, with no notice period and no Sunset/Deprecation headers.
+entries:
+  - version: v24.1.1
+    date: '2024-01-22'
+    latest: true
+    breaking: true
+    highlights:
+      - Refactored the dynamic API and the subscription APIs.
+      - Implemented OPA middleware authorization and Envoy remote-user authentication.
+      - Added a Dapr event publisher and transaction-processed events written to the database.
+      - New key adapters for accounts; updated the account API message-signing endpoint.
+      - New Django app for public endpoints.
+      - Fixed a bug where authenticated users could not view openapi yaml files.
+    breaking_notes:
+      - Breaking changes on subscription-related endpoints (UI updated to match).
+      - Breaking changes on organisation endpoints (UI updated to match).
+  - version: v23.9.1
+    date: '2023-10-26'
+    highlights:
+      - Produce an App Template from an existing application; API to deploy a template from a template bundle.
+      - Added Dapr to Django.
+      - Dark-mode UI enhancements for the Smart Contract Designer.
+  - version: v23.8.1
+    date: '2023-10-09'
+    highlights:
+      - Hyperledger Fabric Blocks Listener and the txn-wallet header.
+      - New endpoints for blockchain configuration and management within organizations.
+      - Asynchronous transactions now re-queue on recoverable errors.
+      - Subscriptions extended to include Accounts; webhook-subscription dropdown added.
+      - Contract deployment events raised via queues.
+      - Quorum migration alert banner introduced.
+  - version: v23.6.1
+    date: '2023-06-05'
+  - version: v23.4.1
+    date: '2023-04-24'
+  - version: v23.3.1
+    date: '2023-03-27'
+  - version: v23.3
+    date: '2023-02-03'
+  - version: Blocks Update
+    date: '2022-11-21'
+staleness:
+  days_since_last_entry_at_capture: 947
+  captured: '2026-08-27'

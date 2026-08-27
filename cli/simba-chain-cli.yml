@@ -1,0 +1,70 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/getting-started/quickstart-guides/cli-quickstart,
+  /developer-resources/plugins/hardhat, /developer-resources/plugins/truffle,
+  /developer-resources/plugins/ci-cd
+description: >-
+  SIMBA ships no standalone `simba` binary. Its command-line surface is delivered as PLUGINS to the
+  two web3 build toolchains — Hardhat and Truffle — invoked through those tools' own CLIs
+  (`npx hardhat simba:<command>` / `truffle run simba <command>`), which is why the packages live in
+  packages/simba-chain-packages.yml under npm rather than as a released executable. SIMBA's own docs
+  state Truffle and Ganache are being sunset by Consensys and that SIMBA will deprioritize the Truffle
+  plugin, recommending Hardhat or Foundry; only Hardhat should be treated as current.
+clis:
+  - name: SIMBA Hardhat plugin
+    status: current
+    package: "@simbachain/hardhat"
+    registry: npm
+    version: 5.2.0
+    published: '2024-01-09'
+    source: https://github.com/SIMBAChain/hardhat
+    docs: https://docs.simbachain.com/documentation/developer-resources/plugins/hardhat
+    install:
+      - npm install @simbachain/hardhat
+    invocation: npx hardhat <simba task>
+    prerequisites:
+      - A reachable SIMBA Blocks instance (SIMBA_API_BASE_URL) with at least one application created.
+      - A TypeScript Hardhat project (npx hardhat) with package.json at the project root.
+    configuration:
+      env_file_names: ['.simbachain.env', 'simbachain.env', '.env']
+      env_file_locations: ['project root (next to package.json)', '$SIMBA_HOME']
+      also: simba.json may carry SIMBA_API_BASE_URL
+      variables: [SIMBA_API_BASE_URL, SIMBA_AUTH_CLIENT_ID, SIMBA_AUTH_CLIENT_SECRET]
+      docs: https://docs.simbachain.com/documentation/developer-resources/environmental-variables
+    surface:
+      - group: auth
+        purpose: Log in to a Blocks instance interactively, or non-interactively with client credentials.
+      - group: contract
+        purpose: Compile, export and deploy Solidity contracts into a Blocks application.
+      - group: application
+        purpose: Select or create the Blocks organisation and application a project targets.
+    note: >-
+      Command names are documented per-task on the Hardhat plugin page rather than as a flat command
+      list; only the groups above are recorded here, because inventing task names would be fabrication.
+  - name: SIMBA Truffle plugin
+    status: deprioritized
+    package: "@simbachain/truffle"
+    registry: npm
+    version: 6.1.0
+    published: '2023-05-01'
+    source: https://github.com/SIMBAChain/truffle
+    docs: https://docs.simbachain.com/documentation/developer-resources/plugins/truffle
+    install:
+      - npm install -g truffle@5.4.26
+      - npm install @simbachain/truffle
+    invocation: truffle run simba <command>
+    deprecation_notice: >-
+      "Truffle and Ganache are being sunset by Consensys and will no longer be getting updates. As
+      such SIMBA will deprioritize updates to the Truffle plugin. We recommend moving over to Hardhat
+      or Foundry." — SIMBA CLI Quickstart.
+    constraint: >-
+      A supported Solidity version must be used or the plugin exits with error 8002 Metadata
+      Generation Error ("unsupported version ^0.8.17").
+shared:
+  supported_solidity_versions: ['0.4.24','0.5.10','0.5.12','0.5.17','0.6.3','0.6.4','0.6.9','0.7.0','0.7.6','0.8.3','0.8.9','0.8.11','0.8.14']
+  ci_cd: https://docs.simbachain.com/documentation/developer-resources/plugins/ci-cd
+  editor_integration:
+    name: SIMBA Chain VS Code extension
+    source: https://github.com/SIMBAChain/simbachain-vscode-extension
+    note: Repository last pushed 2023-01-24; no published Marketplace listing resolved at probe time.

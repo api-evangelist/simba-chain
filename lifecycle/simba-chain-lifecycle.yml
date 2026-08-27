@@ -1,0 +1,86 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/release-notes/release-notes,
+  https://docs.simbachain.com/documentation/getting-started/quickstart-guides/cli-quickstart,
+  https://docs.simbachain.com/documentation/smart-contracts/upgrading-smart-contracts,
+  https://simbachain.com/terms-and-conditions/, plus DNS probes for a status host on 2026-08-27.
+versioning:
+  scheme: calendar release for the platform (Blocks vYY.N.P) + a path version on the contract API (/v2/)
+  mechanism: URL path (/v2/apps/...) — no version request header
+  service_version_endpoints:
+    - https://blocks.simbachain.com/api/member-service/version
+    - https://blocks.simbachain.com/api/member-service-validator/version
+  observed: '2.10.1'
+  docs: https://docs.simbachain.com/documentation/release-notes/release-notes
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  notes: >-
+    SIMBA publishes no deprecation policy, no notice period and no RFC 8594 Sunset/Deprecation
+    headers. Deprecations surface as prose. The one explicit, dated deprecation SIMBA does publish is
+    a TOOLING deprecation, stated on the CLI Quickstart page: "Truffle and Ganache are being sunset by
+    Consensys and will no longer be getting updates. As such SIMBA will deprioritize updates to the
+    Truffle plugin. We recommend moving over to Hardhat or Foundry." A second, softer one is the
+    Quorum migration alert banner introduced in Blocks v23.8.1.
+deprecated_components:
+  - name: SIMBA Truffle plugin (@simbachain/truffle)
+    status: deprioritized
+    superseded_by: SIMBA Hardhat plugin (@simbachain/hardhat); SIMBA also names Foundry
+    evidence: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/cli-quickstart
+    last_release: '2023-05-01'
+  - name: JavaScript SDK (@simbachain/libsimba-js)
+    status: de-facto abandoned
+    evidence: >-
+      github.com/SIMBAChain/libsimba-js is ARCHIVED; last npm release 2020-08-26. The docs still
+      publish a "JavaScript SDK" page, so the documentation and the artefact disagree.
+  - name: .NET SDK (libSimba.Net)
+    status: de-facto abandoned
+    evidence: Last NuGet release 1.0.9 on 2019-10-01 while the docs still publish a ".NET SDK" page.
+deprecated_operations:
+  - source: openapi/simba-chain-member-service-openapi.json
+    count: 0
+    note: No operation or parameter carries deprecated:true.
+  - source: openapi/simba-chain-member-service-validator-openapi.json
+    count: 0
+    note: No operation or parameter carries deprecated:true.
+immutability:
+  note: >-
+    On the blockchain write surface, "lifecycle" means contract upgrade rather than API deprecation.
+    SIMBA documents three upgrade strategies — a new API endpoint per contract iteration, a version
+    constant/parameter inside the contract, and a proxy pattern — because deployed contracts are
+    immutable and cannot be altered in place.
+  docs: https://docs.simbachain.com/documentation/smart-contracts/upgrading-smart-contracts
+sla:
+  url: null
+  public_uptime_target: null
+  notes: >-
+    No public SLA or uptime commitment. Terms and Conditions at
+    https://simbachain.com/terms-and-conditions/ (HTTP 200) govern website use; platform commitments
+    are handled in enterprise agreements.
+status_page:
+  url: null
+  probed:
+    - url: https://status.simbachain.com/
+      status: '<no response> — DNS does not resolve (curl 6, checked 2026-08-27)'
+  notes: >-
+    SIMBA publishes no status page. The platform does expose liveness probes an operator can poll —
+    GET /api/member-service/healthz returns {"status":"OK"} anonymously (HTTP 200), as does
+    /api/member-service-validator/healthz — but a health endpoint is not an incident-communication
+    surface. NO StatusPage pointer is emitted for this provider.
+health_endpoints:
+  - url: https://blocks.simbachain.com/api/member-service/healthz
+    status: 200
+    body: '{"status":"OK"}'
+  - url: https://blocks.simbachain.com/api/member-service/version
+    status: 200
+    body: '"2.10.1"'
+  - url: https://blocks.simbachain.com/api/member-service/pingz
+    status: 401
+    body: '{"detail":"missing-auth-header"}'
+    note: pingz requires auth; healthz does not.
+changelog: changelog/simba-chain-changelog.yml
+rate_limits: rate-limits/simba-chain-rate-limits.yml

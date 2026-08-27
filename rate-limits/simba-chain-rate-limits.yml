@@ -1,0 +1,46 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://docs.simbachain.com/documentation/api-reference/common-error-codes (the only place a limit
+  is acknowledged), the complete documentation index at
+  https://docs.simbachain.com/documentation/llms.txt (HTTP 200, 100 pages — no rate-limit,
+  quota, throttling or fair-use page), and anonymous response-header inspection of
+  https://blocks.simbachain.com/api/member-service/healthz and /version on 2026-08-27.
+description: >-
+  SIMBA acknowledges throttling exists — error code 1429 TOO_MANY_REQUESTS maps to HTTP 429 in its
+  published error reference — but publishes no numeric limit, no window, no scope and no runtime
+  header. Anonymous 200 responses from the Blocks API carry only `server: istio-envoy` and
+  `strict-transport-security`; no RateLimit-*, X-RateLimit-* or Retry-After header was present. An
+  agent therefore has no runtime signal to pace itself with and can only react to a 429 after it
+  happens, with no Retry-After to tell it how long to wait.
+limit_count: 0
+limits: []
+headers:
+  request: []
+  response: []
+  observed: []
+response_codes:
+  throttled: 429
+  error_code: '1429'
+  error_name: TOO_MANY_REQUESTS
+  retry_after: not sent
+retry_guidance_published:
+  - >-
+    Error 3012 RETRYABLE_TRANSACTION_ERROR (HTTP 503) explicitly marks a transaction failure as
+    retryable, and SIMBA re-queues asynchronous transactions on recoverable errors (Blocks v23.8.1).
+  - >-
+    Error 3016 CONTRACT_TRANSACTION_NOT_FOUND_ERROR (HTTP 400) says "may still be processing, try
+    again shortly" — a poll instruction rather than a rate limit.
+  - >-
+    Caution: because there is no idempotency key, retrying an ambiguous WRITE is not safe. See
+    conventions/simba-chain-conventions.yml.
+evidence:
+  - url: https://blocks.simbachain.com/api/member-service/healthz
+    status: 200
+    note: No rate-limit headers in the response.
+  - url: https://blocks.simbachain.com/api/member-service/version
+    status: 200
+    note: No rate-limit headers in the response.
+  - url: https://docs.simbachain.com/documentation/api-reference/common-error-codes
+    status: 200
+    note: Defines 1429 TOO_MANY_REQUESTS / HTTP 429 with no accompanying limit.

@@ -1,0 +1,124 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Baseline derived by 0-working/derive-authentication.py from
+  openapi/simba-chain-member-service-openapi.json, then upgraded from
+  https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys,
+  /developer-resources/environmental-variables, /developer-resources/simba-sdks/python-sdk,
+  /getting-started/quickstart-guides/api-quickstart, and the provider's live OIDC discovery document
+  (HTTP 200, fetched 2026-08-27, saved to well-known/simba-chain-openid-configuration.json).
+docs: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+summary:
+  types:
+    - oauth2
+    - openIdConnect
+  oauth2_flows:
+    - authorizationCode
+    - clientCredentials
+    - refreshToken
+  api_keys: false
+  http_basic: false
+  mutual_tls: false
+schemes:
+  - name: OAuth2AuthorizationCodeBearer
+    type: oauth2
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+        tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
+        scopes: 0
+    sources:
+      - openapi/simba-chain-member-service-openapi.json
+  - name: client_credentials
+    type: oauth2
+    flow: clientCredentials
+    tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
+    declared_in_spec: false
+    evidence: >-
+      Not declared as a securityScheme, but it is the flow every SIMBA SDK and CLI actually uses.
+      grant_types_supported in the OIDC discovery document includes client_credentials; the
+      authentication OpenAPI defines a ClientCredentialParams request schema
+      (grant_type, client_id, client_secret); and the Python SDK docs state "The AUTH_FLOW should
+      currently not be changed as only client_credentials is supported."
+    sources:
+      - well-known/simba-chain-openid-configuration.json
+      - openapi/simba-chain-member-service-validator-openapi.json
+      - https://docs.simbachain.com/documentation/developer-resources/simba-sdks/python-sdk
+openid_connect:
+  discovery: https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/openid-configuration
+  discovery_saved: well-known/simba-chain-openid-configuration.json
+  jwks_uri: https://blocks.simbachain.com/api/member-service-validator/oauth/.well-known/jwks
+  jwks_saved: well-known/simba-chain-jwks.json
+  issuer: simba://authservice
+  issuer_deviation: >-
+    The issuer is a simba:// URI, not an https URL. That is off-spec for OpenID Connect Discovery and
+    will fail strict relying-party issuer validation.
+  userinfo_endpoint: https://blocks.simbachain.com/api/member-service-validator/oauth/userinfo
+  end_session_endpoint: https://blocks.simbachain.com/api/member-service-validator/oauth/logout
+  response_types_supported: [code]
+  id_token_signing_alg_values_supported: [RS256]
+  token_endpoint_auth_methods_supported: [client_secret_post, client_secret_basic, none]
+  code_challenge_methods_supported: [S256]
+  scopes_supported: [openid, email, profile]
+  signing_keys: 1 RSA key (RS256), kid 2ecb858a-8f72-40b5-846c-a3f21eab4e43
+credentials:
+  name: Secret Key Pair (client ID + client secret)
+  where_to_get: >-
+    SIMBA Build UI: organisation -> application -> Secrets, or user Profile -> Secrets -> New Secret.
+    Programmatically via the Member Service ClientCredentials operations.
+  one_time_display: >-
+    "This will be the only time the secret value is shown, so be sure to save it somewhere safe."
+  rotation: refresh_client_credential_secret_organisations__organisation_name__client_credentials__client_id__refresh_put
+  revocation: revoke_client_credential_organisations__organisation_name__client_credentials__client_id__delete
+  expiry_field: expire_at
+  last_used_field: last_used
+  scoping: A credential is scoped to a user or an organisation, and carries its own role assignments.
+  impersonation: >-
+    create_impersonate_user_client_credentials_user_accounts__user_account_id__client_credentials__post
+    mints a credential that acts as a given user (impersonate_user field on ClientCredential).
+configuration:
+  env_vars:
+    SIMBA_API_BASE_URL: The Blocks instance base URL, e.g. https://blocks.simbachain.com or a customer's own instance.
+    SIMBA_AUTH_BASE_URL: Same as SIMBA_API_BASE_URL for the default Blocks auth provider; the Keycloak host when SIMBA_AUTH_PROVIDER=KC.
+    SIMBA_AUTH_CLIENT_ID: The API Secret Key.
+    SIMBA_AUTH_CLIENT_SECRET: The API Client Secret.
+    SIMBA_AUTH_PROVIDER: Blocks (default) or KC for Keycloak.
+    SIMBA_AUTH_REALM: Keycloak realm, e.g. simbachain (Keycloak only).
+    SIMBA_HOME: Directory holding the dotenv file when it is not in the project root.
+  dotenv_names: ['.simbachain.env', 'simbachain.env', '.env']
+  docs: https://docs.simbachain.com/documentation/developer-resources/environmental-variables
+  alternative_providers:
+    - name: Blocks (built-in)
+      note: SIMBA_AUTH_BASE_URL == SIMBA_API_BASE_URL.
+    - name: Keycloak
+      note: SIMBA_AUTH_PROVIDER=KC with SIMBA_AUTH_REALM; SIMBA_AUTH_BASE_URL points at the Keycloak server.
+additional_factors:
+  totp:
+    supported: true
+    operations: [get_setup_account_security_2fa_setup_get, post_setup_verify_account_security_2fa_setup_verify_post, post_setup_acknowledge_account_security_2fa_setup_acknowledge_post, post_disable_account_security_2fa_disable_post, get_recovery_codes_show_account_security_2fa_recovery_codes_show_get, post_recovery_codes_regenerate_account_security_2fa_recovery_codes_regenerate_post]
+  passkeys:
+    supported: true
+    standard: WebAuthn / FIDO2
+    operations: [list_passkeys_account_security_passkeys_get, post_register_options_account_security_passkeys_register_options_post, post_register_verify_account_security_passkeys_register_verify_post, post_rename_passkey_account_security_passkeys__credential_pk__rename_post, post_delete_passkey_account_security_passkeys__credential_pk__delete_post]
+  verifiable_presentation:
+    supported: true
+    operation: get_vc_secure_session_oauth_vc_secure_session_post
+    request: 'GetVcSecureParams { registrant_did_id }'
+    response: VPChallenge
+    optional_header: dpop (RFC 9449 proof of possession)
+    note: Binds a W3C DID-held Verifiable Credential to a session; see conformance/simba-chain-conformance.yml.
+delegation:
+  header: txn-delegate
+  description: >-
+    On the dynamic contract API, identifies an external user on whose behalf a transaction is signed.
+    Requires delegation permission for the organisation. The delegated identifier is opaque to Blocks.
+  docs: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
+observed:
+  - url: https://blocks.simbachain.com/api/member-service/pingz
+    status: 401
+    body: '{"detail":"missing-auth-header"}'
+    note: Anonymous probe 2026-08-27 — the missing-credential response shape.
+  - url: https://blocks.simbachain.com/api/platform-service/v2/
+    status: 401
+    body: '{"detail":"missing-auth-header"}'
+    note: Anonymous probe 2026-08-27 — the dynamic contract API is gated at the gateway.

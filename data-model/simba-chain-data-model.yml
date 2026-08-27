@@ -1,0 +1,78 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from the component schemas and $ref links in
+  openapi/simba-chain-member-service-openapi.json (95 schemas) and
+  openapi/simba-chain-member-service-validator-openapi.json (26 schemas), plus the Subscription object
+  fields SIMBA documents in prose at
+  https://docs.simbachain.com/documentation/simba-build/subscriptions
+description: >-
+  SIMBA's published data model is the IDENTITY AND TENANCY graph, not the traceability graph. The
+  entities below are what the two published contracts describe: domains that contain organisations,
+  organisations that contain users, roles, credentials, device apps and invites, and permissions that
+  bind them. The traceability entities SIMBA sells — products, components, lots, events, passports —
+  are NOT in any published schema, because they are defined by whichever smart contract a customer
+  deploys and are surfaced through a per-application generated API. That absence is the finding.
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key field name; direction is from
+  the entity that owns the reference.
+identifiers:
+  primary: UUID (id, created_at, updated_at on every persisted entity)
+  cross_service: >-
+    simba_id and identity_urn — the identity claims the authorization server issues (see
+    claims_supported in well-known/simba-chain-openid-configuration.json). simba_id appears on
+    UserAccount, ClientCredential and the permissions lookup path
+    /identity/{simba_id}/permissions/, so it is the join key across services.
+  decentralized: >-
+    DIDs appear on device-app registration (registrant_did, registrant_did_id, device_did,
+    device_did_id) alongside multicodec-encoded public keys.
+entities:
+  - {name: Domain, domain: tenancy, description: A top-level tenant grouping that owns organisations; carries a reference_domain and configuration.}
+  - {name: Organisation, domain: tenancy, description: The unit users, roles, applications and credentials belong to. Flagged is_domain when it is a domain rather than a plain org.}
+  - {name: UserAccount, domain: identity, description: A person. Holds email, email_verified, last_login, simba_id, default_organisation, TOTP state and tokens_invalidated_at.}
+  - {name: UserProfile, domain: identity, description: First/last name attached to a UserAccount.}
+  - {name: ClientCredential, domain: credentials, description: A client_id/client_secret pair used by SDKs and CLIs. Scoped to a user or an organisation; revocable, refreshable, has expire_at and last_used.}
+  - {name: Role, domain: authz, description: A named bundle of permissions. Global, org-scoped, domain-scoped or custom; supports inherited_roles.}
+  - {name: Permission, domain: authz, description: A service/resource/action triple with an effect and optional resource_attributes and urls. Org-scopable.}
+  - {name: Invite, domain: onboarding, description: An invitation to join an organisation. Has inviter, invitee_email, status, expires_at, roles and sub_invites.}
+  - {name: BulkUsersImportRequest, domain: onboarding, description: An asynchronous bulk user import job with status, errors and submitted_by.}
+  - {name: DeviceApp, domain: devices, description: A registered device-side application within an organisation, with its own roles.}
+  - {name: DeviceAppRegistration, domain: devices, description: A device enrolment carrying registrant and device DIDs, multicodec public keys, an issued Verifiable Credential (vc, vc_id) and a status.}
+  - {name: Passkey, domain: credentials, description: A WebAuthn credential registered against a UserAccount.}
+  - {name: Template, domain: messaging, description: A notification/message template, optionally derived from a parent_id.}
+  - {name: DomainConfiguration, domain: configuration, description: Per-domain service configuration, redacted on read.}
+  - {name: Subscription, domain: events, description: 'Documented in prose, not in a published schema: id, created_on, updated_on, endpoint, txn, contract, subscription_type (METHOD|CREATION|EVENT|PAYMENT), auth_type and filters[].'}
+relationships:
+  - {from: Domain, to: Organisation, kind: has_many, via: organisations}
+  - {from: Domain, to: DomainConfiguration, kind: has_one, via: organisation_name}
+  - {from: Organisation, to: UserAccount, kind: has_many, via: organisations}
+  - {from: Organisation, to: ClientCredential, kind: has_many, via: organisation}
+  - {from: Organisation, to: Role, kind: has_many, via: organisation}
+  - {from: Organisation, to: Invite, kind: has_many, via: org_domain}
+  - {from: Organisation, to: DeviceApp, kind: has_many, via: organisation}
+  - {from: UserAccount, to: UserProfile, kind: has_one, via: user_account_id}
+  - {from: UserAccount, to: ClientCredential, kind: has_many, via: user_account_id}
+  - {from: UserAccount, to: Passkey, kind: has_many, via: credential_pk}
+  - {from: UserAccount, to: Organisation, kind: belongs_to, via: default_organisation}
+  - {from: ClientCredential, to: UserAccount, kind: belongs_to, via: impersonate_user}
+  - {from: ClientCredential, to: Role, kind: has_many, via: roles}
+  - {from: Role, to: Permission, kind: has_many, via: permissions}
+  - {from: Role, to: Role, kind: has_many, via: inherited_roles}
+  - {from: Invite, to: UserAccount, kind: belongs_to, via: inviter}
+  - {from: Invite, to: Role, kind: has_many, via: roles}
+  - {from: Invite, to: Invite, kind: has_many, via: sub_invites}
+  - {from: DeviceApp, to: DeviceAppRegistration, kind: has_many, via: device_app}
+  - {from: DeviceApp, to: Role, kind: has_many, via: roles}
+  - {from: DeviceAppRegistration, to: UserAccount, kind: belongs_to, via: impersonate_user}
+  - {from: BulkUsersImportRequest, to: UserAccount, kind: belongs_to, via: submitted_by}
+  - {from: Subscription, to: Organisation, kind: belongs_to, via: implicit}
+not_modelled:
+  - >-
+    Products, components, serial numbers, lots, shipments, custody events, certifications and digital
+    product passports. SIMBA's traceability data model is defined per deployment by the customer's
+    smart contract; the platform generates a REST API and a GraphQL schema from that contract's asset
+    and transaction functions (asset functions are uppercase with a "__"-prefixed string key,
+    transaction functions lowercase). No tenant-independent schema for these exists.
+  - >-
+    Wallets, accounts, transactions and file bundles — real Blocks entities exposed on
+    /api/platform-service, but with no published schema.
