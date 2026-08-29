@@ -11,6 +11,17 @@ description: >-
   per application, plus a GraphQL query surface, event/notification subscriptions, and DID/Verifiable
   Credential issuance through SIMBA Ensure. Customers include the U.S. Air Force, Boeing, the Defense
   Logistics Agency and the Australian Defence Force.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://simbachain.com/wp-content/uploads/2024/01/SIMBA-Chain-logo.svg
 url: https://raw.githubusercontent.com/api-evangelist/simba-chain/refs/heads/main/apis.yml
 x-type: company
