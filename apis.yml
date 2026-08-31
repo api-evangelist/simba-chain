@@ -60,6 +60,13 @@ apis:
   baseURL: https://blocks.simbachain.com/api/member-service
   tags:
   - Identity
+  - Organization
+  - User
+  - Roles
+  - Permissions
+  - Credentials
+  tags_raw:
+  - Identity
   - Organizations
   - Users
   - Roles
@@ -90,6 +97,11 @@ apis:
   humanURL: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
   baseURL: https://blocks.simbachain.com/api/member-service-validator
   tags:
+  - Authentication
+  - OpenID Connect
+  - Verifiable Credentials
+  - Decentralized Identifiers
+  tags_raw:
   - Authentication
   - OAuth
   - OpenID Connect
@@ -125,6 +137,11 @@ apis:
   humanURL: https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator
   baseURL: https://blocks.simbachain.com/api/platform-service
   tags:
+  - Blockchain
+  - Smart Contracts
+  - Traceability
+  - Webhook
+  tags_raw:
   - Blockchain
   - Smart Contracts
   - Traceability
