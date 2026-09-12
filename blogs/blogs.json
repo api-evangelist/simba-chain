@@ -3,12 +3,19 @@
   "feeds": [
     {
       "source": "https://simbachain.com/contact/",
-      "feed_url": "https://simbachain.com/feed/",
+      "feed_url": "https://simbachain.com/contact/blog/feed/",
       "title": "",
       "saved": 0,
       "method": "discovered"
+    },
+    {
+      "source": "https://simbachain.com/feed/",
+      "feed_url": "https://simbachain.com/feed/",
+      "title": "",
+      "saved": 0,
+      "method": "feed"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-08-30T22:33:40Z"
+  "fetched": "2026-09-06T19:17:18Z"
 }
