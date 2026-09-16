@@ -63,81 +63,6 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 apis:
-- aid: simba-chain:simba-chain-member-service-api
-  name: SIMBA Blocks Member Service API
-  description: >-
-    The organization, user, role, permission and API-credential control plane behind SIMBA Build.
-    Creates and manages organisations, domains, invites, org-scoped and custom system roles, bulk user
-    imports, device apps and registrations, notification templates, passkeys and TOTP two-factor
-    enrolment, and the client_id / client_secret pairs the SIMBA SDKs authenticate with. OpenAPI 3.1.0,
-    106 operations across 74 paths, served publicly (unauthenticated spec, OAuth2-protected operations)
-    from SIMBA's own hosted Blocks instance.
-  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
-  baseURL: https://blocks.simbachain.com/api/member-service
-  tags:
-  - Identity
-  - Organization
-  - User
-  - Roles
-  - Permissions
-  - Credentials
-  tags_raw:
-  - Identity
-  - Organizations
-  - Users
-  - Roles
-  - Permissions
-  - Credentials
-  properties:
-  - type: OpenAPI
-    url: openapi/simba-chain-member-service-openapi.json
-  - type: Overlay
-    url: overlays/simba-chain-member-service-overlay.yaml
-  - type: Documentation
-    url: https://docs.simbachain.com/documentation/api-reference/api-reference
-  - type: APIReference
-    url: https://blocks.simbachain.com/api/member-service/docs
-  - type: ErrorCatalog
-    url: errors/simba-chain-problem-types.yml
-  - type: DataModel
-    url: data-model/simba-chain-data-model.yml
-- aid: simba-chain:simba-chain-authentication-api
-  name: SIMBA Blocks Authentication Service API
-  description: >-
-    SIMBA's OAuth 2.0 / OpenID Connect authorization server and token validator (the "member service
-    validator"). Publishes an OIDC discovery document and a JWKS, issues tokens over the
-    authorization_code, refresh_token and client_credentials grants with PKCE S256, validates external
-    tokens for downstream services, and exposes a Verifiable-Presentation challenge endpoint
-    (/oauth/vc-secure-session) that binds a W3C DID to a session with an optional DPoP proof header.
-    OpenAPI 3.1.0, 22 operations across 15 paths.
-  humanURL: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
-  baseURL: https://blocks.simbachain.com/api/member-service-validator
-  tags:
-  - Authentication
-  - OpenID Connect
-  - Verifiable Credentials
-  - Decentralized Identifiers
-  tags_raw:
-  - Authentication
-  - OAuth
-  - OpenID Connect
-  - Verifiable Credentials
-  - Decentralized Identifiers
-  properties:
-  - type: OpenAPI
-    url: openapi/simba-chain-member-service-validator-openapi.json
-  - type: Overlay
-    url: overlays/simba-chain-member-service-validator-overlay.yaml
-  - type: OpenIDConnectDiscovery
-    url: well-known/simba-chain-openid-configuration.json
-  - type: JWKS
-    url: well-known/simba-chain-jwks.json
-  - type: OAuthScopes
-    url: scopes/simba-chain-scopes.yml
-  - type: Documentation
-    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
-  - type: APIReference
-    url: https://blocks.simbachain.com/api/member-service-validator/docs
 - aid: simba-chain:simba-chain-platform-service-api
   name: SIMBA Blocks Platform Service (Dynamic Contract API)
   description: >-
@@ -145,11 +70,10 @@ apis:
     auto-generates REST endpoints for every method and public variable of that contract — POST to invoke,
     GET to query prior invocations — under /v2/apps/{application}/contract/{contract_name}/{method_name}/,
     with a per-application OpenAPI definition and SwaggerUI rendered from the application's overview page.
-    Also carries wallet/account creation, file bundles (_bundleHash), off-chain storage, transaction
-    validation and the subscription/notification surface. Because the contract shape is generated per
-    deployed application, there is no single tenant-independent published OpenAPI; the generated
-    definition is reachable only inside an authenticated application. Probed anonymously 2026-08-27:
-    HTTP 401 {"detail":"missing-auth-header"}.
+    Also carries wallet/account creation, file bundles (_bundleHash), off-chain storage, transaction validation
+    and the subscription/notification surface. Because the contract shape is generated per deployed application,
+    there is no single tenant-independent published OpenAPI; the generated definition is reachable only
+    inside an authenticated application. Probed anonymously 2026-08-27: HTTP 401 {"detail":"missing-auth-header"}.
   humanURL: https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator
   baseURL: https://blocks.simbachain.com/api/platform-service
   tags:
@@ -166,7 +90,8 @@ apis:
   - type: Documentation
     url: https://docs.simbachain.com/documentation/api-reference/api-reference
   - type: GettingStarted
-    url: https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
+    url: >-
+      https://docs.simbachain.com/documentation/getting-started/quickstart-guides/api-quickstart
   - type: Webhooks
     url: asyncapi/simba-chain-subscriptions-webhooks.yml
   - type: ErrorCatalog
@@ -189,7 +114,489 @@ apis:
     url: mcp/simba-chain-mcp.yml
   - type: ToolCrosswalk
     url: mcp/simba-chain-tool-crosswalk.yml
+- aid: simba-chain:simba-chain-authentication-api
+  name: SIMBA Chain Authentication API
+  description: The Authentication API from SIMBA Chain — 9 operation(s) for authentication.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Authentication
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-authentication-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-bulk-users-import-requests-api
+  name: SIMBA Chain Bulk Users Import Requests API
+  description: >-
+    The Bulk Users Import Requests API from SIMBA Chain — 2 operation(s) for bulk users import requests.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Bulk Users Import Requests
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-bulk-users-import-requests-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-clientcredentials-api
+  name: SIMBA Chain Client Credentials API
+  description: The ClientCredentials API from SIMBA Chain — 10 operation(s) for clientcredentials.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - ClientCredentials
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-clientcredentials-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-deviceappadmin-api
+  name: SIMBA Chain Device App Admin API
+  description: The DeviceAppAdmin API from SIMBA Chain — 3 operation(s) for deviceappadmin.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - DeviceAppAdmin
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-deviceappadmin-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-deviceappregistration-api
+  name: SIMBA Chain Device App Registration API
+  description: >-
+    The DeviceAppRegistration API from SIMBA Chain — 2 operation(s) for deviceappregistration.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - DeviceAppRegistration
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-deviceappregistration-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-domains-api
+  name: SIMBA Chain Domains API
+  description: The Domains API from SIMBA Chain — 4 operation(s) for domains.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Domains
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-domains-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-events-api
+  name: SIMBA Chain Events API
+  description: The Events API from SIMBA Chain — 1 operation(s) for events.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-invites-api
+  name: SIMBA Chain Invites API
+  description: The Invites API from SIMBA Chain — 8 operation(s) for invites.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Invites
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-invites-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-organisations-api
+  name: SIMBA Chain Organisations API
+  description: The Organisations API from SIMBA Chain — 4 operation(s) for organisations.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Organisations
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-organisations-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-passkeys-api
+  name: SIMBA Chain Passkeys API
+  description: The Passkeys API from SIMBA Chain — 5 operation(s) for passkeys.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Passkeys
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-passkeys-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-permissions-api
+  name: SIMBA Chain Permissions API
+  description: The Permissions API from SIMBA Chain — 5 operation(s) for permissions.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Permissions
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-permissions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-probes-api
+  name: SIMBA Chain Probes API
+  description: The Probes API from SIMBA Chain — 4 operation(s) for probes.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Probes
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-probes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-roles-api
+  name: SIMBA Chain Roles API
+  description: The Roles API from SIMBA Chain — 6 operation(s) for roles.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-roles-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-serviceadmin-api
+  name: SIMBA Chain Service Admin API
+  description: The ServiceAdmin API from SIMBA Chain — 2 operation(s) for serviceadmin.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - ServiceAdmin
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-serviceadmin-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-templates-api
+  name: SIMBA Chain Templates API
+  description: The Templates API from SIMBA Chain — 2 operation(s) for templates.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-twofactor-api
+  name: SIMBA Chain Two Factor API
+  description: The TwoFactor API from SIMBA Chain — 7 operation(s) for twofactor.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - TwoFactor
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-twofactor-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-users-api
+  name: SIMBA Chain Users API
+  description: The Users API from SIMBA Chain — 11 operation(s) for users.
+  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
+  baseURL: https://blocks.simbachain.com/api/member-service
+  tags:
+  - Users
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
 common:
+- type: Overlay
+  url: overlays/simba-chain-member-service-overlay.yaml
+- type: Overlay
+  url: overlays/simba-chain-member-service-validator-overlay.yaml
 - type: DomainSecurity
   url: security/simba-chain-domain-security.yml
 - type: Website
