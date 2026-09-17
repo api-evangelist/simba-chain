@@ -171,34 +171,6 @@ apis:
     url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
   - type: APIReference
     url: https://blocks.simbachain.com/api/member-service-validator/docs
-- aid: simba-chain:simba-chain-clientcredentials-api
-  name: SIMBA Chain Client Credentials API
-  description: The ClientCredentials API from SIMBA Chain — 10 operation(s) for clientcredentials.
-  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
-  baseURL: https://blocks.simbachain.com/api/member-service
-  tags:
-  - ClientCredentials
-  properties:
-  - type: OpenAPI
-    url: openapi/simba-chain-clientcredentials-api-openapi.yml
-  - type: Documentation
-    url: https://docs.simbachain.com/documentation/api-reference/api-reference
-  - type: APIReference
-    url: https://blocks.simbachain.com/api/member-service/docs
-  - type: ErrorCatalog
-    url: errors/simba-chain-problem-types.yml
-  - type: DataModel
-    url: data-model/simba-chain-data-model.yml
-  - type: OpenIDConnectDiscovery
-    url: well-known/simba-chain-openid-configuration.json
-  - type: JWKS
-    url: well-known/simba-chain-jwks.json
-  - type: OAuthScopes
-    url: scopes/simba-chain-scopes.yml
-  - type: Documentation
-    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
-  - type: APIReference
-    url: https://blocks.simbachain.com/api/member-service-validator/docs
 - aid: simba-chain:simba-chain-deviceappadmin-api
   name: SIMBA Chain Device App Admin API
   description: The DeviceAppAdmin API from SIMBA Chain — 3 operation(s) for deviceappadmin.
@@ -536,16 +508,16 @@ apis:
     url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
   - type: APIReference
     url: https://blocks.simbachain.com/api/member-service-validator/docs
-- aid: simba-chain:simba-chain-twofactor-api
-  name: SIMBA Chain Two Factor API
-  description: The TwoFactor API from SIMBA Chain — 7 operation(s) for twofactor.
+- aid: simba-chain:simba-chain-users-api
+  name: SIMBA Chain Users API
+  description: The Users API from SIMBA Chain — 11 operation(s) for users.
   humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
   baseURL: https://blocks.simbachain.com/api/member-service
   tags:
-  - TwoFactor
+  - Users
   properties:
   - type: OpenAPI
-    url: openapi/simba-chain-twofactor-api-openapi.yml
+    url: openapi/simba-chain-users-api-openapi.yml
   - type: Documentation
     url: https://docs.simbachain.com/documentation/api-reference/api-reference
   - type: APIReference
@@ -564,16 +536,44 @@ apis:
     url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
   - type: APIReference
     url: https://blocks.simbachain.com/api/member-service-validator/docs
-- aid: simba-chain:simba-chain-users-api
-  name: SIMBA Chain Users API
-  description: The Users API from SIMBA Chain — 11 operation(s) for users.
-  humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
-  baseURL: https://blocks.simbachain.com/api/member-service
+- aid: simba-chain:simba-chain-client-credentials-api
+  name: SIMBA Chain Client Credentials API
+  description: The Client Credentials API from SIMBA Chain — 10 operation(s) for client credentials.
+  humanURL: https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator
+  baseURL: https://blocks.simbachain.com/api/platform-service
   tags:
-  - Users
+  - Client Credentials
   properties:
   - type: OpenAPI
-    url: openapi/simba-chain-users-api-openapi.yml
+    url: openapi/simba-chain-client-credentials-api-openapi.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/api-reference/api-reference
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service/docs
+  - type: ErrorCatalog
+    url: errors/simba-chain-problem-types.yml
+  - type: DataModel
+    url: data-model/simba-chain-data-model.yml
+  - type: OpenIDConnectDiscovery
+    url: well-known/simba-chain-openid-configuration.json
+  - type: JWKS
+    url: well-known/simba-chain-jwks.json
+  - type: OAuthScopes
+    url: scopes/simba-chain-scopes.yml
+  - type: Documentation
+    url: https://docs.simbachain.com/documentation/getting-started/obtaining-api-keys
+  - type: APIReference
+    url: https://blocks.simbachain.com/api/member-service-validator/docs
+- aid: simba-chain:simba-chain-two-factor-api
+  name: SIMBA Chain Two Factor API
+  description: The Two Factor API from SIMBA Chain — 7 operation(s) for two factor.
+  humanURL: https://docs.simbachain.com/documentation/getting-started/dynamic-api-generator
+  baseURL: https://blocks.simbachain.com/api/platform-service
+  tags:
+  - Two Factor
+  properties:
+  - type: OpenAPI
+    url: openapi/simba-chain-two-factor-api-openapi.yml
   - type: Documentation
     url: https://docs.simbachain.com/documentation/api-reference/api-reference
   - type: APIReference
