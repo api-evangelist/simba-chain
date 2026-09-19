@@ -262,6 +262,8 @@ apis:
   humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
   baseURL: https://blocks.simbachain.com/api/member-service
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -514,6 +516,8 @@ apis:
   humanURL: https://docs.simbachain.com/documentation/simba-build/managing-an-organization
   baseURL: https://blocks.simbachain.com/api/member-service
   tags:
+  - User
+  tags_raw:
   - Users
   properties:
   - type: OpenAPI
