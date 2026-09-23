@@ -1,0 +1,913 @@
+openapi: 3.2.0
+info:
+  title: Member Service Invites API
+  version: 2.10.1
+tags:
+- name: Invites
+paths:
+  /invites/{invite_id}/reject:
+    put:
+      tags:
+      - Invites
+      summary: Reject Organisation Invite
+      operationId: reject_organisation_invite_invites__invite_id__reject_put
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /invites/:
+    get:
+      tags:
+      - Invites
+      summary: Get User Invites
+      operationId: get_user_invites_invites__get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: inviter_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Inviter Id
+      - name: invitee_email
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Invitee Email
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: system_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Type
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      - name: expired
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Expired
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_Invite_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /invites/{invite_id}:
+    get:
+      tags:
+      - Invites
+      summary: Get Invite Info
+      operationId: get_invite_info_invites__invite_id__get
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InviteInfo'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /organisations/{organisation_name}/invites/:
+    post:
+      tags:
+      - Invites
+      summary: Create Organisation Invite
+      description: '## Creates organisation invites
+
+        This endpoint creates the invites for an organisation/domain. Multiple invites can be sent to multiple users at
+
+        the same time. While inviting a user to an organisation/domain, the roles the user should be assigned can also be
+
+        specified. If no roles are specified, then the _default role will be assigned.
+
+        This endpoint can also be used to invite a user(s) to a domain and it''s organisations that belong to the domain
+
+        at the same time with its respective roles.
+
+
+        Args:
+
+        - `organisation name`: Name of the organisation/domain
+
+
+        Example:
+
+        Body Payload:
+
+        - **invites**: List of invites to create
+
+        - **to_email**: Email of the user to invite.
+
+        - **role_ids**: Ids of roles to assign to user for an organisation/domain.
+
+        - **role_names**: Names of roles to assign to user for an organisation/domain.
+
+        - **sub_organisations**: List of organisations of the domain to automatically invite along with domain.
+
+        - **organisation_name**: Name of organisation that already belongs to the domain.
+
+        - **role_ids**: Ids of roles to assign to user for an organisation.
+
+        - **role_names**: Names of roles to assign to user for an organisation.
+
+
+        For an organisation or domain
+
+        ```
+
+        {
+
+        "invites": [
+
+        {
+
+        "to_email": "email_of_user@scaas.py",
+
+        "role_ids": ["f4e41abf-09ef-43f7-94c0-33ba51238828", "a4e41abf-09ef-43f7-94c0-33ba51238827"],
+
+        "role_names": ["_Admin", "_OtherRole"],
+
+
+        },
+
+        {
+
+        "to_email": "email_of_user2@scaas.py",
+
+        },
+
+        ]
+
+        }
+
+        ```
+
+        For a domain with sub organisations
+
+        ```
+
+        {
+
+        "invites": [
+
+        {
+
+        "to_email": "email_of_user@scaas.py",
+
+        "role_ids": ["f4e41abf-09ef-43f7-94c0-33ba51238828", "a4e41abf-09ef-43f7-94c0-33ba51238827"],
+
+        "role_names": ["_Admin", "_OtherDomainRole"],
+
+        "sub_organisations": [
+
+        {
+
+        organisation_name: "Name of the organisation that belongs to the domain",
+
+        role_ids = ["b4e41abf-09ef-43f7-94c0-33ba51238827"],
+
+        role_names: ["OrgRole1", "OrgRole2"]
+
+        }
+
+        ]
+
+        }
+
+        ]
+
+        }
+
+        ```
+
+
+        Returns:
+
+        - List of ids (UUIDs) of the newly created invites.'
+      operationId: create_organisation_invite_organisations__organisation_name__invites__post
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBulkInviteInput'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: uuid
+                title: Response Create Organisation Invite Organisations  Organisation Name  Invites  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    get:
+      tags:
+      - Invites
+      summary: Get Organisation Invites
+      operationId: get_organisation_invites_organisations__organisation_name__invites__get
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: inviter_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Inviter Id
+      - name: invitee_email
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Invitee Email
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: system_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: System Type
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      - name: expired
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Expired
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_Invite_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /organisations/{organisation_name}/invites/{invite_id}/resend:
+    patch:
+      tags:
+      - Invites
+      summary: Resend User Invite
+      operationId: resend_user_invite_organisations__organisation_name__invites__invite_id__resend_patch
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Resend User Invite Organisations  Organisation Name  Invites  Invite Id  Resend Patch
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /organisations/{organisation_name}/invites/{invite_id}:
+    get:
+      tags:
+      - Invites
+      summary: Get Organisation Invite
+      operationId: get_organisation_invite_organisations__organisation_name__invites__invite_id__get
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invite'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    delete:
+      tags:
+      - Invites
+      summary: Revoke Organisation Invite
+      operationId: revoke_organisation_invite_organisations__organisation_name__invites__invite_id__delete
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /invites/{invite_id}/accept-existing:
+    put:
+      tags:
+      - Invites
+      summary: Accept Invite For Existing User
+      operationId: accept_invite_for_existing_user_invites__invite_id__accept_existing_put
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Accept Invite For Existing User Invites  Invite Id  Accept Existing Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /invites/{invite_id}/accept-new:
+    put:
+      tags:
+      - Invites
+      summary: Accept New User Invite
+      description: '## Accept a new user invite.
+
+
+        The provided password must be between 12 and 128 characters long.'
+      operationId: accept_new_user_invite_invites__invite_id__accept_new_put
+      parameters:
+      - name: invite_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Invite Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputBase'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Accept New User Invite Invites  Invite Id  Accept New Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    RoleMinimal:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: RoleMinimal
+    Inviter:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        email:
+          type: string
+          format: email
+          title: Email
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+      type: object
+      required:
+      - id
+      - email
+      - first_name
+      - last_name
+      title: Inviter
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    SubInvite:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        invitee_email:
+          type: string
+          format: email
+          title: Invitee Email
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        org_domain:
+          $ref: '#/components/schemas/OrganisationMinimal'
+        roles:
+          items:
+            $ref: '#/components/schemas/RoleMinimal'
+          type: array
+          title: Roles
+        system_type:
+          $ref: '#/components/schemas/SystemTypes'
+      type: object
+      required:
+      - invitee_email
+      - status
+      - expires_at
+      - org_domain
+      - roles
+      - system_type
+      title: SubInvite
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    InviteStatus:
+      type: string
+      enum:
+      - PENDING
+      - ACCEPTED
+      - REVOKED
+      - REJECTED
+      title: InviteStatus
+    CreateInviteSubOrgsInput:
+      properties:
+        organisation_name:
+          type: string
+          title: Organisation Name
+          description: The name of the sub organisation
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          minItems: 0
+          title: Role Ids
+          description: List of org role ids to assign to user for organisation
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          minItems: 0
+          title: Role Names
+          description: List of org role names to assign to user for organisation
+          default: []
+      type: object
+      required:
+      - organisation_name
+      title: CreateInviteSubOrgsInput
+    Page_Invite_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Invite'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[Invite]
+    CreateInviteInput:
+      properties:
+        to_email:
+          type: string
+          format: email
+          title: To Email
+          description: Email of the user
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          minItems: 0
+          title: Role Ids
+          description: List of role ids to assign to user for the organisation/domain
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          minItems: 0
+          title: Role Names
+          description: List of role names to assign to user for organisation or domain
+          default: []
+        sub_organisations:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateInviteSubOrgsInput'
+            type: array
+            minItems: 0
+          - type: 'null'
+          title: Sub Organisations
+          description: List of sub organisations for the domain
+      type: object
+      required:
+      - to_email
+      title: CreateInviteInput
+    CreateBulkInviteInput:
+      properties:
+        invites:
+          items:
+            $ref: '#/components/schemas/CreateInviteInput'
+          type: array
+          minItems: 1
+          title: Invites
+          description: List of invite to create
+      type: object
+      required:
+      - invites
+      title: CreateBulkInviteInput
+    OrganisationMinimal:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - id
+      - name
+      title: OrganisationMinimal
+    InviteInfo:
+      properties:
+        system_type:
+          $ref: '#/components/schemas/SystemTypes'
+        new_user:
+          type: boolean
+          title: New User
+        org_domain:
+          $ref: '#/components/schemas/OrganisationMinimal'
+      type: object
+      required:
+      - system_type
+      - new_user
+      - org_domain
+      title: InviteInfo
+    Invite:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        inviter:
+          $ref: '#/components/schemas/Inviter'
+        invitee_email:
+          type: string
+          format: email
+          title: Invitee Email
+        status:
+          $ref: '#/components/schemas/InviteStatus'
+        expires_at:
+          type: string
+          format: date-time
+          title: Expires At
+        system_type:
+          $ref: '#/components/schemas/SystemTypes'
+        org_domain:
+          $ref: '#/components/schemas/OrganisationMinimal'
+        roles:
+          items:
+            $ref: '#/components/schemas/RoleMinimal'
+          type: array
+          title: Roles
+        sub_invites:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/SubInvite'
+            type: array
+          - type: 'null'
+          title: Sub Invites
+      type: object
+      required:
+      - inviter
+      - invitee_email
+      - status
+      - expires_at
+      - system_type
+      - org_domain
+      - roles
+      title: Invite
+    UserInputBase:
+      properties:
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        password:
+          type: string
+          title: Password
+      type: object
+      required:
+      - first_name
+      - last_name
+      - password
+      title: UserInputBase
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

@@ -1,0 +1,378 @@
+openapi: 3.2.0
+info:
+  title: Member Service Bulk Users Import Requests API
+  version: 2.10.1
+tags:
+- name: Bulk Users Import Requests
+paths:
+  /bulk-users-import-requests/:
+    get:
+      tags:
+      - Bulk Users Import Requests
+      summary: Get Bulk Users Import Requests
+      operationId: get_bulk_users_import_requests_bulk_users_import_requests__get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: submitted_by_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Submitted By Id
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_BulkUsersImportRequest_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    post:
+      tags:
+      - Bulk Users Import Requests
+      summary: Create Bulk Users Import Request
+      description: '## Uploads a CSV file with organisation/domain, user(s) and roles information
+
+        The endpoint uploads a CSV file, parses it, and saves the data. It is processed asynchronously.
+
+
+        Args:
+
+        - `bulk_import_file`: A csv file of a specific format to add users to orgs, assign roles, remove roles and set
+
+        default organisation for the user(s)
+
+
+        Each row specifies the organisation/domains to which the user(s) with the respective role(s) should be added to
+
+        and/or the roles to remove from a user that already belongs to the organisation/domain.
+
+
+        The user can be a new or existing user.
+
+
+        Each row in the CSV file should follow the following format:
+
+        **org name, user email;first name;last name|another user;;, roles to add, roles to remove, is_default_org, system_type**
+
+        i.e.:
+
+        org-a,user-1@org.com;user-fn1;user-ln1|user-2@org.com;user-fn2;user-ln2,RoleToAdd1|RoleToAdd2…, RoleToRemove1|RoleToRemove2, True, build
+
+
+        The CSV follows the following rules:
+
+        - A valid CSV file
+
+        - The file should be less than 1Mb
+
+        - If headers are present the following: org_name, users, add_roles, remove_roles, is_default_org, system_type
+
+        - At least the first two columns are required.
+
+        - Any columns after the first six are ignored.
+
+        - Columns and the rules:
+
+        - **Ist column**: Organisation/domain name. The organisation or domain to which the user should be added.
+
+        - This is required
+
+        - The organisation or domain should exist, the bulk import does not create organisations or domains
+
+        - **2nd column**: list of users to add to the organisation or domain.
+
+        - At least one user is required
+
+        - There can be multiple users, each separated by a |
+
+        - The structure of a user should be: user''s email; user’s first name; user’s last name
+
+        i.e donald_duck@scass.py;Donald;duck
+
+        - The user email is required and should be a valid email.
+
+        - The first name and last name are optional for existing users i.e.
+
+        - with no first name and last name: donald_duck@scass.py;; or just donald_duck@scass.py
+
+        - with just first name: donald_duck@scass.py;Donald; or donald_duck@scass.py;donald
+
+        - with just the last name donald_duck@scass.py;;duck
+
+        - An example of multiple users: i.e. donald_duck@scass.py;Donald;Duck|daisy_duck@scass.py;daisy;duck
+
+        - A new user should have a first name and last name if the same user is provided multiple times in the bulk import user request, then the last non-null value of the first and last name is used
+
+        - Similarly for existing users, the last non-null entry of the first name and/or last name is updated if provided
+
+        - **3rd column**: roles to add to the users for the organisation/domain
+
+        - This column is optional
+
+        - A list of role names separated by |. i.e Admin|GlobalAdmin|...
+
+        - The role should belong to the organisation or domain
+
+        - All global roles are ignored
+
+        - **4th column**: The third column: roles to remove to the users for the organisation/domain
+
+        - This column is optional
+
+        - A list of role names separated by |. i.e Admin|GlobalAdmin|...
+
+        - The role should belong to the user for the organisation or domain
+
+        - All global roles are ignored
+
+        - **5th column**: sets the organisation/domain as the default organisation/domain for the users.
+
+        - This is optional, the values can be true or false.
+
+        - **6th column**: The system type - Specifies the system the users belong to. values: ''build'' or ''ensure'''
+      operationId: create_bulk_users_import_request_bulk_users_import_requests__post
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Body_create_bulk_users_import_request_bulk_users_import_requests__post'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Create Bulk Users Import Request Bulk Users Import Requests  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /bulk-users-import-requests/{bulk_users_import_request_id}:
+    get:
+      tags:
+      - Bulk Users Import Requests
+      summary: Get Bulk Users Import Request
+      operationId: get_bulk_users_import_request_bulk_users_import_requests__bulk_users_import_request_id__get
+      parameters:
+      - name: bulk_users_import_request_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Bulk Users Import Request Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkUsersImportRequest'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    BulkUsersImportTaskStatus:
+      type: string
+      enum:
+      - pending
+      - processing
+      - completed
+      - errored
+      title: BulkUsersImportTaskStatus
+    Page_BulkUsersImportRequest_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/BulkUsersImportRequest'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[BulkUsersImportRequest]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    BulkUsersImportRequest:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        status:
+          $ref: '#/components/schemas/BulkUsersImportTaskStatus'
+        errors:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Errors
+        submitted_by:
+          $ref: '#/components/schemas/UserMoniker'
+      type: object
+      required:
+      - status
+      - submitted_by
+      title: BulkUsersImportRequest
+    UserMoniker:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        email:
+          type: string
+          format: email
+          title: Email
+      type: object
+      required:
+      - email
+      title: UserMoniker
+    Body_create_bulk_users_import_request_bulk_users_import_requests__post:
+      properties:
+        bulk_import_file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: Bulk Import File
+      type: object
+      required:
+      - bulk_import_file
+      title: Body_create_bulk_users_import_request_bulk_users_import_requests__post
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

@@ -1,0 +1,577 @@
+openapi: 3.2.0
+info:
+  title: Member Service Device App Registration API
+  version: 2.10.1
+tags:
+- name: DeviceAppRegistration
+paths:
+  /organisations/{organisation_name}/device-apps/{app_name}/registrations/:
+    post:
+      tags:
+      - DeviceAppRegistration
+      summary: Create Device App Registration
+      description: '## Creates a Device App Registration
+
+        This endpoint creates app registration in the db. Sends a request to Provision the Registrant Did and Device Did asynchronously.
+
+        Updates the DB with Registrant task id and Device task id with the relevant task Id.
+
+
+        Args:
+
+        - `app_name`: Name of the Device app
+
+        - `organisation name`: Name of the organisation/domain
+
+
+        Example:
+
+        Body Payload:
+
+        **device_info: Information that identifies the device
+
+        **app_info: Information that identifies the app
+
+        **registrant_pub_key: Registrant public_key is the blockchain address, used for signing VPs (using blockchain address)
+
+        **device_pub_key: Device public_key is the blockchain address, used for signing VPs (using blockchain address)
+
+        **registrant_public_key_multicodec: Registrant multicodec is the encoded full public key for signing DPOP proofs (using public key)
+
+        **device_public_key_multicodec: Device multicodec is the encoded full public key for signing DPOP proofs (using public key)
+
+
+        For an organisation or domain
+
+        ```
+
+        {
+
+        "device_info": "FCCCFFFF-62FC-4ECB-B2F5-92C9E79AC7F9",
+
+        "app_info": "see-mobile-app1.0.0",
+
+        "registrant_pub_key": "0xd4039eB67CBB36429Ad9DD30187B94f6A5122244",
+
+        "device_pub_key": "0xd4039eB67CBB36429Ad9DD30187B94f6A5122255",
+
+        "registrant_public_key_multicodec": "zYshimdW4hBJNu19cyjVdYpzzAagjQB1eFZPofv22uSruHjZ",
+
+        "registrant_public_key_multicodec": "fZ3shimdW4hBJNu19cyjVdYpzzAagjQB1eFZPofv22uSruHjZ",
+
+
+        }'
+      operationId: create_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__post
+      parameters:
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceAppRegistration'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Create Device App Registration Organisations  Organisation Name  Device Apps  App Name  Registrations  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    get:
+      tags:
+      - DeviceAppRegistration
+      summary: Get Device App Registrations
+      operationId: get_device_app_registrations_organisations__organisation_name__device_apps__app_name__registrations__get
+      parameters:
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: device_info
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device Info
+      - name: app_info
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: App Info
+      - name: registrant_pub_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrant Pub Key
+      - name: registrant_did_task_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrant Did Task Id
+      - name: registrant_did_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrant Did Id
+      - name: registrant_public_key_multicodec
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrant Public Key Multicodec
+      - name: device_pub_key
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device Pub Key
+      - name: device_did_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device Did Id
+      - name: device_public_key_multicodec
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device Public Key Multicodec
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      - name: vc_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Vc Id
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_DeviceAppRegistration_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /organisations/{organisation_name}/device-apps/{app_name}/registrations/{registration_id}:
+    get:
+      tags:
+      - DeviceAppRegistration
+      summary: Get Device App Registration
+      operationId: get_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__registration_id__get
+      parameters:
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Name
+      - name: registration_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Registration Id
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceAppRegistration'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    put:
+      tags:
+      - DeviceAppRegistration
+      summary: Update Device App Registration
+      operationId: update_device_app_registration_organisations__organisation_name__device_apps__app_name__registrations__registration_id__put
+      parameters:
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: App Name
+      - name: registration_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Registration Id
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeviceAppRegistrationInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Update Device App Registration Organisations  Organisation Name  Device Apps  App Name  Registrations  Registration Id  Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    Page_DeviceAppRegistration_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/DeviceAppRegistration'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[DeviceAppRegistration]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    DeviceAppSlim:
+      properties:
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: DeviceAppSlim
+    CreateDeviceAppRegistration:
+      properties:
+        device_info:
+          type: string
+          title: Device Info
+        app_info:
+          type: string
+          title: App Info
+        registrant_pub_key:
+          type: string
+          title: Registrant Pub Key
+        device_pub_key:
+          type: string
+          title: Device Pub Key
+        registrant_public_key_multicodec:
+          type: string
+          title: Registrant Public Key Multicodec
+        device_public_key_multicodec:
+          type: string
+          title: Device Public Key Multicodec
+        impersonate_user:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Impersonate User
+          default: false
+      type: object
+      required:
+      - device_info
+      - app_info
+      - registrant_pub_key
+      - device_pub_key
+      - registrant_public_key_multicodec
+      - device_public_key_multicodec
+      title: CreateDeviceAppRegistration
+    DeviceAppRegistrationStatus:
+      type: string
+      enum:
+      - in-progress
+      - complete
+      - failed
+      - revoked
+      title: DeviceAppRegistrationStatus
+    UpdateDeviceAppRegistrationInput:
+      properties:
+        status:
+          $ref: '#/components/schemas/DeviceAppRegistrationStatus'
+          default: revoked
+      type: object
+      title: UpdateDeviceAppRegistrationInput
+    DeviceAppRegistration:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        device_info:
+          type: string
+          title: Device Info
+        app_info:
+          type: string
+          title: App Info
+        registrant_pub_key:
+          type: string
+          title: Registrant Pub Key
+        device_pub_key:
+          type: string
+          title: Device Pub Key
+        registrant_public_key_multicodec:
+          type: string
+          title: Registrant Public Key Multicodec
+        device_public_key_multicodec:
+          type: string
+          title: Device Public Key Multicodec
+        impersonate_user:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Impersonate User
+          default: false
+        registrant_id:
+          type: string
+          format: uuid
+          title: Registrant Id
+        registrant_did_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Registrant Did Id
+        registrant_did:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Registrant Did
+        device_did_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Device Did Id
+        device_did:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Device Did
+        vc_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Vc Id
+        vc:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Vc
+        status:
+          $ref: '#/components/schemas/DeviceAppRegistrationStatus'
+        device_public_key_hex:
+          type: string
+          title: Device Public Key Hex
+        registrant_public_key_hex:
+          type: string
+          title: Registrant Public Key Hex
+        errors:
+          additionalProperties: true
+          type: object
+          title: Errors
+          default: {}
+        device_app:
+          $ref: '#/components/schemas/DeviceAppSlim'
+      type: object
+      required:
+      - device_info
+      - app_info
+      - registrant_pub_key
+      - device_pub_key
+      - registrant_public_key_multicodec
+      - device_public_key_multicodec
+      - registrant_id
+      - status
+      - device_public_key_hex
+      - registrant_public_key_hex
+      - device_app
+      title: DeviceAppRegistration
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

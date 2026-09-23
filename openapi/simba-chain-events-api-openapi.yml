@@ -1,0 +1,98 @@
+openapi: 3.2.0
+info:
+  title: Member Service Events API
+  version: 2.10.1
+tags:
+- name: Events
+paths:
+  /republish_events/:
+    post:
+      tags:
+      - Events
+      summary: Republish Events
+      operationId: republish_events_republish_events__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RepublishEventsInput'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    RepublishEventChoices:
+      type: string
+      enum:
+      - organisation-added
+      - domain-added
+      - identity-added
+      - identity-added-to-org-domain
+      title: RepublishEventChoices
+    RepublishEventsInput:
+      properties:
+        event_choices:
+          items:
+            $ref: '#/components/schemas/RepublishEventChoices'
+          type: array
+          minItems: 1
+          title: Event Choices
+      type: object
+      required:
+      - event_choices
+      title: RepublishEventsInput
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

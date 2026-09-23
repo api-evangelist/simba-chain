@@ -1,0 +1,111 @@
+openapi: 3.2.0
+info:
+  title: Simba Chain Probes API
+  version: '1.0'
+  description: 'Operations tagged Probes across 2 of this provider''s published API definitions: simba-chain-member-service-openapi.json, simba-chain-member-service-validator-openapi.json. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Probes
+paths:
+  /version:
+    get:
+      tags:
+      - Probes
+      summary: Get Version
+      operationId: get_version_version_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                title: Response Get Version Version Get
+  /healthz:
+    get:
+      tags:
+      - Probes
+      summary: Health
+      operationId: health_healthz_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                additionalProperties: true
+                type: object
+                title: Response Health Healthz Get
+  /readiness:
+    get:
+      tags:
+      - Probes
+      summary: Readiness
+      operationId: readiness_readiness_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponses'
+  /pingz:
+    get:
+      tags:
+      - Probes
+      summary: Ping
+      operationId: ping_pingz_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PingResponses'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    PingResponse:
+      properties:
+        component:
+          type: string
+          title: Component
+        success:
+          type: boolean
+          title: Success
+        error:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Error
+      type: object
+      required:
+      - component
+      - success
+      title: PingResponse
+    PingResponses:
+      properties:
+        service:
+          type: string
+          title: Service
+        responses:
+          items:
+            $ref: '#/components/schemas/PingResponse'
+          type: array
+          title: Responses
+      type: object
+      required:
+      - service
+      - responses
+      title: PingResponses
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
+x-refined-from:
+- simba-chain-member-service-openapi.json
+- simba-chain-member-service-validator-openapi.json

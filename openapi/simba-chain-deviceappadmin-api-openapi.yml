@@ -1,0 +1,491 @@
+openapi: 3.2.0
+info:
+  title: Member Service Device App Admin API
+  version: 2.10.1
+tags:
+- name: DeviceAppAdmin
+paths:
+  /organisations/{organisation_name}/device-apps/{device_app_name}:
+    get:
+      tags:
+      - DeviceAppAdmin
+      summary: Get Device App
+      operationId: get_device_app_organisations__organisation_name__device_apps__device_app_name__get
+      parameters:
+      - name: device_app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Device App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceApp'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /organisations/{organisation_name}/device-apps/:
+    get:
+      tags:
+      - DeviceAppAdmin
+      summary: Get Device Apps
+      operationId: get_device_apps_organisations__organisation_name__device_apps__get
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      - name: organisation_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Organisation Id
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_DeviceApp_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    post:
+      tags:
+      - DeviceAppAdmin
+      summary: Create Device App
+      operationId: create_device_app_organisations__organisation_name__device_apps__post
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeviceAppInput'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Create Device App Organisations  Organisation Name  Device Apps  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /organisations/{organisation_name}/device-apps/{device_app_name}/roles/:
+    put:
+      tags:
+      - DeviceAppAdmin
+      summary: Update Device App Roles
+      operationId: update_device_app_roles_organisations__organisation_name__device_apps__device_app_name__roles__put
+      parameters:
+      - name: device_app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Device App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleNamesInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Update Device App Roles Organisations  Organisation Name  Device Apps  Device App Name  Roles  Put
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    delete:
+      tags:
+      - DeviceAppAdmin
+      summary: Remove Device App Roles
+      operationId: remove_device_app_roles_organisations__organisation_name__device_apps__device_app_name__roles__delete
+      parameters:
+      - name: device_app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Device App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleNamesInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Remove Device App Roles Organisations  Organisation Name  Device Apps  Device App Name  Roles  Delete
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    post:
+      tags:
+      - DeviceAppAdmin
+      summary: Add Device App Roles
+      operationId: add_device_app_roles_organisations__organisation_name__device_apps__device_app_name__roles__post
+      parameters:
+      - name: device_app_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Device App Name
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleNamesInput'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+                title: Response Add Device App Roles Organisations  Organisation Name  Device Apps  Device App Name  Roles  Post
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    RoleWithoutPermissions:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        organisation:
+          anyOf:
+          - $ref: '#/components/schemas/Organisation'
+          - type: 'null'
+      type: object
+      required:
+      - name
+      title: RoleWithoutPermissions
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Page_DeviceApp_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/DeviceApp'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[DeviceApp]
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    Organisation:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        is_domain:
+          type: boolean
+          title: Is Domain
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+      type: object
+      required:
+      - name
+      - display_name
+      - is_domain
+      title: Organisation
+      description: 'A model representing an organisation.
+
+
+        The field `name` is unique.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    RoleNamesInput:
+      properties:
+        role_names:
+          items:
+            type: string
+          type: array
+          title: Role Names
+          default: []
+      type: object
+      title: RoleNamesInput
+    DeviceApp:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        organisation:
+          $ref: '#/components/schemas/Organisation'
+        roles:
+          items:
+            $ref: '#/components/schemas/RoleWithoutPermissions'
+          type: array
+          title: Roles
+      type: object
+      required:
+      - name
+      - organisation
+      - roles
+      title: DeviceApp
+    CreateDeviceAppInput:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
+        role_names:
+          items:
+            type: string
+          type: array
+          title: Role Names
+      type: object
+      required:
+      - name
+      - role_names
+      title: CreateDeviceAppInput
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

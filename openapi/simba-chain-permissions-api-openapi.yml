@@ -1,0 +1,728 @@
+openapi: 3.2.0
+info:
+  title: Simba Chain Permissions API
+  version: '1.0'
+  description: 'Operations tagged Permissions across 2 of this provider''s published API definitions: simba-chain-member-service-openapi.json, simba-chain-member-service-validator-openapi.json. Each path carries the servers of the definition it was published in.'
+tags:
+- name: Permissions
+paths:
+  /permissions/:
+    get:
+      tags:
+      - Permissions
+      summary: Get Permissions
+      operationId: get_permissions_permissions__get
+      parameters:
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          title: Page
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 50
+          title: Size
+      - name: name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+      - name: description
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+      - name: effect
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Effect
+      - name: service
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service
+      - name: resource
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resource
+      - name: action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Action
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Page_Permission_'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /permissions/{permission_id}:
+    get:
+      tags:
+      - Permissions
+      summary: Get Permission
+      operationId: get_permission_permissions__permission_id__get
+      parameters:
+      - name: permission_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Permission Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /identity/{simba_id}/permissions/:
+    get:
+      tags:
+      - Permissions
+      summary: Get Identity Permissions By Simba Id
+      operationId: get_identity_permissions_by_simba_id_identity__simba_id__permissions__get
+      parameters:
+      - name: simba_id
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Simba Id
+      - name: service
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service
+      - name: resource
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resource
+      - name: action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Action
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      - name: org_names__in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: ''
+          title: Org Names  In
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IdentityPermissionItem'
+                title: Response Get Identity Permissions By Simba Id Identity  Simba Id  Permissions  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /identity_permissions/:
+    get:
+      tags:
+      - Permissions
+      summary: Get Identities Permissions
+      operationId: get_identities_permissions_identity_permissions__get
+      parameters:
+      - name: service
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Service
+      - name: resource
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Resource
+      - name: action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Action
+      - name: order_by
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: created_at
+          title: Order By
+      - name: simba_id
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Simba Id
+      - name: org_names__in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          default: ''
+          title: Org Names  In
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIdentityPermissions'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /sync_permissions/:
+    post:
+      tags:
+      - Permissions
+      summary: Sync Permission
+      operationId: sync_permission_sync_permissions__post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncServicePermissions'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    Permission:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        service:
+          type: string
+          title: Service
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+        is_org_scoped:
+          type: boolean
+          title: Is Org Scoped
+        resource_attributes:
+          additionalProperties: true
+          type: object
+          title: Resource Attributes
+        urls:
+          items:
+            type: string
+          type: array
+          title: Urls
+          default: []
+        effect:
+          $ref: '#/components/schemas/Effect'
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+      type: object
+      required:
+      - name
+      - description
+      - service
+      - resource
+      - action
+      - is_org_scoped
+      - resource_attributes
+      - effect
+      title: Permission
+      description: A model representing a permission.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    IdentityPermissionItem:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        is_org_scoped:
+          type: boolean
+          title: Is Org Scoped
+        org_domain_name:
+          type: string
+          title: Org Domain Name
+        service:
+          type: string
+          title: Service
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+      type: object
+      required:
+      - id
+      - name
+      - is_org_scoped
+      - org_domain_name
+      - service
+      - resource
+      - action
+      title: IdentityPermissionItem
+    Effect:
+      type: string
+      enum:
+      - allow
+      title: Effect
+    Page_Permission_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Permission'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[Permission]
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SyncPermissionInput:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        service:
+          type: string
+          title: Service
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+        is_org_scoped:
+          type: boolean
+          title: Is Org Scoped
+        resource_attributes:
+          additionalProperties: true
+          type: object
+          title: Resource Attributes
+        urls:
+          items:
+            type: string
+          type: array
+          title: Urls
+          default: []
+        effect:
+          $ref: '#/components/schemas/Effect'
+      type: object
+      required:
+      - name
+      - description
+      - service
+      - resource
+      - action
+      - is_org_scoped
+      - resource_attributes
+      - effect
+      title: SyncPermissionInput
+      description: A model representing a permission to sync.
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    SyncServicePermissions:
+      properties:
+        service:
+          type: string
+          title: Service
+        permissions:
+          items:
+            $ref: '#/components/schemas/SyncPermissionInput'
+          type: array
+          title: Permissions
+        roles:
+          items:
+            $ref: '#/components/schemas/SyncRoleInput'
+          type: array
+          title: Roles
+      type: object
+      required:
+      - service
+      - permissions
+      - roles
+      title: SyncServicePermissions
+      description: A model representing a service roles and permission to sync.
+    Identity:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        simba_id:
+          type: string
+          title: Simba Id
+        urn:
+          type: string
+          title: Urn
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        organisations:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+          title: Organisations
+      type: object
+      required:
+      - id
+      - simba_id
+      - urn
+      - organisations
+      title: Identity
+    SyncRoleInput:
+      properties:
+        is_org_role:
+          type: boolean
+          title: Is Org Role
+        is_domain_role:
+          type: boolean
+          title: Is Domain Role
+        name:
+          type: string
+          title: Name
+        is_global:
+          type: boolean
+          title: Is Global
+        inherits:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Inherits
+          default: []
+        permissions:
+          items:
+            type: string
+          type: array
+          title: Permissions
+      type: object
+      required:
+      - is_org_role
+      - is_domain_role
+      - name
+      - is_global
+      - permissions
+      title: SyncRoleInput
+      description: A model representing a role to sync.
+    Organisation:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        is_domain:
+          type: boolean
+          title: Is Domain
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+      type: object
+      required:
+      - name
+      - display_name
+      - is_domain
+      title: Organisation
+      description: 'A model representing an organisation.
+
+
+        The field `name` is unique.'
+    GetIdentityPermissions:
+      properties:
+        identity:
+          $ref: '#/components/schemas/Identity'
+        permissions:
+          items:
+            $ref: '#/components/schemas/OrgScopedPermission'
+          type: array
+          title: Permissions
+      type: object
+      required:
+      - identity
+      - permissions
+      title: GetIdentityPermissions
+    OrgScopedPermission:
+      properties:
+        name:
+          type: string
+          title: Name
+        description:
+          type: string
+          title: Description
+        service:
+          type: string
+          title: Service
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+        is_org_scoped:
+          type: boolean
+          title: Is Org Scoped
+        resource_attributes:
+          additionalProperties: true
+          type: object
+          title: Resource Attributes
+        urls:
+          items:
+            type: string
+          type: array
+          title: Urls
+          default: []
+        effect:
+          $ref: '#/components/schemas/Effect'
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        org_domain_name:
+          type: string
+          title: Org Domain Name
+      type: object
+      required:
+      - name
+      - description
+      - service
+      - resource
+      - action
+      - is_org_scoped
+      - resource_attributes
+      - effect
+      - org_domain_name
+      title: OrgScopedPermission
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
+x-refined-from:
+- simba-chain-member-service-openapi.json
+- simba-chain-member-service-validator-openapi.json

@@ -1,0 +1,300 @@
+openapi: 3.2.0
+info:
+  title: Member Service Service Admin API
+  version: 2.10.1
+tags:
+- name: ServiceAdmin
+paths:
+  /configurations/:
+    get:
+      tags:
+      - ServiceAdmin
+      summary: Get Generic Configurations
+      operationId: get_generic_configurations_configurations__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ServiceConfigurations'
+                - type: 'null'
+                title: Response Get Generic Configurations Configurations  Get
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    put:
+      tags:
+      - ServiceAdmin
+      summary: Set Generic Configurations
+      operationId: set_generic_configurations_configurations__put
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenericConfigurationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceConfigurations'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+  /domains/{organisation_name}/configurations/:
+    put:
+      tags:
+      - ServiceAdmin
+      summary: Set Domain Configurations
+      operationId: set_domain_configurations_domains__organisation_name__configurations__put
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DomainConfigurationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceConfigurations'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+    get:
+      tags:
+      - ServiceAdmin
+      summary: Get Domain Configuration
+      operationId: get_domain_configuration_domains__organisation_name__configurations__get
+      parameters:
+      - name: organisation_name
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Organisation Name
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/ServiceConfigurations'
+                - type: 'null'
+                title: Response Get Domain Configuration Domains  Organisation Name  Configurations  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - OAuth2AuthorizationCodeBearer: []
+components:
+  schemas:
+    DomainConfigurationStatus:
+      type: string
+      enum:
+      - RUNNING
+      - COMPLETED
+      - PARTIAL
+      - FAILED
+      title: DomainConfigurationStatus
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ServiceConfigurations:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        config_status:
+          anyOf:
+          - $ref: '#/components/schemas/DomainConfigurationStatus'
+          - type: 'null'
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/DomainConfiguration'
+          - $ref: '#/components/schemas/RedactedGenericConfiguration'
+          - type: 'null'
+          title: Config
+        state:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: State
+      type: object
+      title: ServiceConfigurations
+    DomainConfiguration:
+      properties:
+        member_service_did_id:
+          anyOf:
+          - type: string
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Service Did Id
+        trust_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trust Profile
+        apps_claim_schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps Claim Schema
+      type: object
+      title: DomainConfiguration
+    GenericConfigurationRequest:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
+      type: object
+      required:
+      - status
+      title: GenericConfigurationRequest
+    RedactedGenericConfiguration:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: string
+            format: password
+            writeOnly: true
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+      type: object
+      title: RedactedGenericConfiguration
+    DomainConfigurationRequest:
+      properties:
+        member_service_did_id:
+          anyOf:
+          - type: string
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Service Did Id
+        trust_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trust Profile
+        apps_claim_schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps Claim Schema
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
+      type: object
+      required:
+      - status
+      title: DomainConfigurationRequest
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

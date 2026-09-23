@@ -1,0 +1,2 @@
+# x-archived-from: simba-chain-member-service-openapi.json
+# x-archived-on: 2026-09-16

@@ -1,0 +1,286 @@
+openapi: 3.2.0
+info:
+  title: Member Service Passkeys API
+  version: 2.10.1
+tags:
+- name: Passkeys
+paths:
+  /account/security/passkeys:
+    get:
+      tags:
+      - Passkeys
+      summary: List Passkeys
+      description: List the current user's passkeys (metadata only).
+      operationId: list_passkeys_account_security_passkeys_get
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PasskeyResponse'
+                title: Response List Passkeys Account Security Passkeys Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/passkeys/register/options:
+    post:
+      tags:
+      - Passkeys
+      summary: Post Register Options
+      description: 'Start a registration ceremony.
+
+
+        Returns the ``PublicKeyCredentialCreationOptions`` JSON produced
+
+        by ``options_to_json``. Raw challenge bytes are b64url in the
+
+        payload; re-serialising through a model would mangle them, so the
+
+        service''s JSON string passes through verbatim.'
+      operationId: post_register_options_account_security_passkeys_register_options_post
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/passkeys/register/verify:
+    post:
+      tags:
+      - Passkeys
+      summary: Post Register Verify
+      description: 'Verify the attestation + persist the credential.
+
+
+        The pop-before-verify step, the first-passkey
+
+        ``tokens_invalidated_at`` bump, the user-binding swap defence,
+
+        and the registered / first-for-user audit events all live in the
+
+        service function.'
+      operationId: post_register_verify_account_security_passkeys_register_verify_post
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyRegisterVerifyRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasskeyResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/passkeys/{credential_pk}/delete:
+    post:
+      tags:
+      - Passkeys
+      summary: Post Delete Passkey
+      description: 'Delete a passkey. The repository''s user-binding WHERE clause
+
+        is the swap defence — a stolen credential UUID scoped to another
+
+        user deletes nothing and collapses to the same 404 as a
+
+        nonexistent id. The deleted-event emit lives in the service
+
+        function.'
+      operationId: post_delete_passkey_account_security_passkeys__credential_pk__delete_post
+      parameters:
+      - name: credential_pk
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Credential Pk
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/passkeys/{credential_pk}/rename:
+    post:
+      tags:
+      - Passkeys
+      summary: Post Rename Passkey
+      description: 'Rename a passkey. Same user-binding clause as delete. The
+
+        renamed-event emit lives in the service function.'
+      operationId: post_rename_passkey_account_security_passkeys__credential_pk__rename_post
+      parameters:
+      - name: credential_pk
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Credential Pk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasskeyRenameRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    PasskeyRenameRequest:
+      properties:
+        nickname:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Nickname
+      type: object
+      required:
+      - nickname
+      title: PasskeyRenameRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    PasskeyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        nickname:
+          type: string
+          title: Nickname
+        device_type:
+          type: string
+          title: Device Type
+        backed_up:
+          type: boolean
+          title: Backed Up
+        transports:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Transports
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Created At
+        last_used_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Used At
+      type: object
+      required:
+      - id
+      - nickname
+      - device_type
+      - backed_up
+      title: PasskeyResponse
+      description: 'SPA listing / registration-result shape.
+
+
+        Metadata only — the credential public key + raw credential id
+
+        bytes never cross the HTTP boundary (audit events follow the
+
+        same rule).'
+    PasskeyRegisterVerifyRequest:
+      properties:
+        nickname:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Nickname
+        credential:
+          additionalProperties: true
+          type: object
+          title: Credential
+      type: object
+      required:
+      - nickname
+      - credential
+      title: PasskeyRegisterVerifyRequest
+      description: '``POST /register/verify`` body — the attestation JSON from
+
+        ``@simplewebauthn/browser startRegistration`` plus the
+
+        user-chosen nickname.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token

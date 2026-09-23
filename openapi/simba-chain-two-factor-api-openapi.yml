@@ -1,0 +1,330 @@
+openapi: 3.2.0
+info:
+  title: Member Service Two Factor API
+  version: 2.10.1
+tags:
+- name: Two Factor
+paths:
+  /account/security/2fa:
+    get:
+      tags:
+      - Two Factor
+      summary: Get Status
+      description: 'Return the 2FA enrolment state for the current user.
+
+
+        ``has_pending_enrolment`` and
+
+        ``has_recovery_codes_pending_acknowledgement`` are derived inside
+
+        the repository; the SPA never sees the underlying ciphertexts.'
+      operationId: get_status_account_security_2fa_get
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotpStatusResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/setup:
+    get:
+      tags:
+      - Two Factor
+      summary: Get Setup
+      description: 'Start a fresh enrolment ceremony.
+
+
+        Overwrites any prior pending secret — the SPA convention is
+
+        that a user can only have one in-flight enrolment at a time, so
+
+        re-issuing setup is the recovery path for "I closed the tab
+
+        before scanning the QR".'
+      operationId: get_setup_account_security_2fa_setup_get
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotpSetupResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/setup/verify:
+    post:
+      tags:
+      - Two Factor
+      summary: Post Setup Verify
+      description: 'Verify the first TOTP code and emit the plaintext recovery
+
+        codes for one-shot display.
+
+
+        The user MUST then call ``/setup/acknowledge`` to engage 2FA.
+
+        The plaintext is re-fetchable via ``/recovery-codes/show`` only
+
+        inside that verified-pending-ack window.'
+      operationId: post_setup_verify_account_security_2fa_setup_verify_post
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TotpCodeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotpRecoveryCodesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/setup/acknowledge:
+    post:
+      tags:
+      - Two Factor
+      summary: Post Setup Acknowledge
+      description: 'Confirm recovery codes have been recorded; engage 2FA.
+
+
+        Idempotent at the service layer — a second call after a
+
+        successful first is a no-op (the atomic enable flip''s WHERE
+
+        clause rejects when ``totp_enabled_at`` is already non-NULL).'
+      operationId: post_setup_acknowledge_account_security_2fa_setup_acknowledge_post
+      parameters: []
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/recovery-codes/show:
+    get:
+      tags:
+      - Two Factor
+      summary: Get Recovery Codes Show
+      description: 'Re-display fallback during the verified-pending-ack window.
+
+
+        404 once the user has acknowledged — the plaintext blob is
+
+        hard-cleared inside the atomic enable flip. The user must
+
+        ``regenerate`` to obtain a fresh set.'
+      operationId: get_recovery_codes_show_account_security_2fa_recovery_codes_show_get
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotpRecoveryCodesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/disable:
+    post:
+      tags:
+      - Two Factor
+      summary: Post Disable
+      description: 'TOTP-gated disable. Recovery-code-as-disable-gate is NOT
+
+        supported (stolen-laptop attacker with one recovery code must
+
+        not be able to dismantle the second factor).'
+      operationId: post_disable_account_security_2fa_disable_post
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TotpCodeRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /account/security/2fa/recovery-codes/regenerate:
+    post:
+      tags:
+      - Two Factor
+      summary: Post Recovery Codes Regenerate
+      description: 'TOTP-gated DELETE + reinsert in the same transaction.
+
+
+        Does NOT refill the re-display blob — re-display is only
+
+        available during the initial verified-pending-ack window. The
+
+        returned codes are the SOLE shipment; the user must record them
+
+        at receive-time.'
+      operationId: post_recovery_codes_regenerate_account_security_2fa_recovery_codes_regenerate_post
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TotpCodeRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TotpRecoveryCodesResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+components:
+  schemas:
+    TotpCodeRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Code
+      type: object
+      required:
+      - code
+      title: TotpCodeRequest
+      description: Body shape for every code-gated endpoint.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TotpSetupResponse:
+      properties:
+        secret:
+          type: string
+          title: Secret
+        qr_svg:
+          type: string
+          title: Qr Svg
+        provisioning_uri:
+          type: string
+          title: Provisioning Uri
+      type: object
+      required:
+      - secret
+      - qr_svg
+      - provisioning_uri
+      title: TotpSetupResponse
+      description: '``GET /account/security/2fa/setup`` payload.'
+    TotpRecoveryCodesResponse:
+      properties:
+        recovery_codes:
+          items:
+            type: string
+          type: array
+          title: Recovery Codes
+      type: object
+      required:
+      - recovery_codes
+      title: TotpRecoveryCodesResponse
+      description: 'Body for endpoints that return plaintext recovery codes
+
+        (one-shot generation + re-display).'
+    TotpStatusResponse:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+        has_pending_enrolment:
+          type: boolean
+          title: Has Pending Enrolment
+        has_recovery_codes_pending_acknowledgement:
+          type: boolean
+          title: Has Recovery Codes Pending Acknowledgement
+      type: object
+      required:
+      - enabled
+      - has_pending_enrolment
+      - has_recovery_codes_pending_acknowledgement
+      title: TotpStatusResponse
+      description: '``GET /account/security/2fa`` payload.
+
+
+        ``enabled`` is true when ``totp_enabled_at IS NOT NULL``.
+
+        ``has_pending_enrolment`` lets the SPA show "you have an
+
+        in-flight enrolment" without leaking the pending secret itself.'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+  securitySchemes:
+    OAuth2AuthorizationCodeBearer:
+      type: oauth2
+      flows:
+        authorizationCode:
+          scopes: {}
+          authorizationUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/authorize
+          tokenUrl: https://blocks.simbachain.com/api/member-service-validator/oauth/token
