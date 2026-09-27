@@ -997,33 +997,33 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    VPChallenge:
+    AuthorizationCodeParams:
       properties:
-        challenge:
+        grant_type:
+          $ref: '#/components/schemas/GrantTypes'
+        client_id:
           type: string
-          title: Challenge
+          title: Client Id
+        code:
+          type: string
+          title: Code
+        redirect_uri:
+          type: string
+          title: Redirect Uri
+        code_verifier:
+          type: string
+          maxLength: 128
+          minLength: 43
+          pattern: ^[A-Za-z0-9._~-]+$
+          title: Code Verifier
       type: object
       required:
-      - challenge
-      title: VPChallenge
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    GetVcSecureParams:
-      properties:
-        registrant_did_id:
-          type: string
-          title: Registrant Did Id
-      type: object
-      required:
-      - registrant_did_id
-      title: GetVcSecureParams
+      - grant_type
+      - client_id
+      - code
+      - redirect_uri
+      - code_verifier
+      title: AuthorizationCodeParams
     Body_logout_post_oauth_logout_post:
       properties:
         id_token_hint:
@@ -1048,40 +1048,46 @@ components:
           title: Csrf Token
       type: object
       title: Body_logout_post_oauth_logout_post
-    VpParams:
+    ValidationError:
       properties:
-        grant_type:
-          $ref: '#/components/schemas/GrantTypes'
-        vp:
-          additionalProperties: true
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
           type: object
-          title: Vp
+          title: Context
       type: object
       required:
-      - grant_type
-      - vp
-      title: VpParams
-    RefreshTokenParams:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    VPChallenge:
       properties:
-        grant_type:
-          $ref: '#/components/schemas/GrantTypes'
-        client_id:
+        challenge:
           type: string
-          title: Client Id
-        refresh_token:
-          type: string
-          title: Refresh Token
-        jwt_fingerprint:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Jwt Fingerprint
+          title: Challenge
       type: object
       required:
-      - grant_type
-      - client_id
-      - refresh_token
-      title: RefreshTokenParams
+      - challenge
+      title: VPChallenge
+    ResponseType:
+      type: string
+      enum:
+      - code
+      title: ResponseType
     TokenResponse:
       properties:
         access_token:
@@ -1133,38 +1139,6 @@ components:
       - vc
       - vc_refresh_token
       title: GrantTypes
-    AuthorizationCodeParams:
-      properties:
-        grant_type:
-          $ref: '#/components/schemas/GrantTypes'
-        client_id:
-          type: string
-          title: Client Id
-        code:
-          type: string
-          title: Code
-        redirect_uri:
-          type: string
-          title: Redirect Uri
-        code_verifier:
-          type: string
-          maxLength: 128
-          minLength: 43
-          pattern: ^[A-Za-z0-9._~-]+$
-          title: Code Verifier
-      type: object
-      required:
-      - grant_type
-      - client_id
-      - code
-      - redirect_uri
-      - code_verifier
-      title: AuthorizationCodeParams
-    SupportedCodeChallengeMethods:
-      type: string
-      enum:
-      - S256
-      title: SupportedCodeChallengeMethods
     JWKS:
       properties:
         keys:
@@ -1177,6 +1151,54 @@ components:
       required:
       - keys
       title: JWKS
+    RefreshTokenParams:
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/GrantTypes'
+        client_id:
+          type: string
+          title: Client Id
+        refresh_token:
+          type: string
+          title: Refresh Token
+        jwt_fingerprint:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Jwt Fingerprint
+      type: object
+      required:
+      - grant_type
+      - client_id
+      - refresh_token
+      title: RefreshTokenParams
+    VpParams:
+      properties:
+        grant_type:
+          $ref: '#/components/schemas/GrantTypes'
+        vp:
+          additionalProperties: true
+          type: object
+          title: Vp
+      type: object
+      required:
+      - grant_type
+      - vp
+      title: VpParams
+    SupportedCodeChallengeMethods:
+      type: string
+      enum:
+      - S256
+      title: SupportedCodeChallengeMethods
+    GetVcSecureParams:
+      properties:
+        registrant_did_id:
+          type: string
+          title: Registrant Did Id
+      type: object
+      required:
+      - registrant_did_id
+      title: GetVcSecureParams
     VpRefreshTokenParams:
       properties:
         grant_type:
@@ -1189,6 +1211,15 @@ components:
       - grant_type
       - refresh_token
       title: VpRefreshTokenParams
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ClientCredentialParams:
       properties:
         grant_type:
@@ -1206,34 +1237,3 @@ components:
       - client_id
       - client_secret
       title: ClientCredentialParams
-    ResponseType:
-      type: string
-      enum:
-      - code
-      title: ResponseType
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError

@@ -271,91 +271,6 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    RoleWithoutPermissions:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        description:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Description
-        organisation:
-          anyOf:
-          - $ref: '#/components/schemas/Organisation'
-          - type: 'null'
-      type: object
-      required:
-      - name
-      title: RoleWithoutPermissions
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    Page_DeviceApp_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/DeviceApp'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[DeviceApp]
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
     Organisation:
       properties:
         id:
@@ -395,6 +310,24 @@ components:
 
 
         The field `name` is unique.'
+    CreateDeviceAppInput:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
+        role_names:
+          items:
+            type: string
+          type: array
+          title: Role Names
+      type: object
+      required:
+      - name
+      - role_names
+      title: CreateDeviceAppInput
     ValidationError:
       properties:
         loc:
@@ -421,16 +354,6 @@ components:
       - msg
       - type
       title: ValidationError
-    RoleNamesInput:
-      properties:
-        role_names:
-          items:
-            type: string
-          type: array
-          title: Role Names
-          default: []
-      type: object
-      title: RoleNamesInput
     DeviceApp:
       properties:
         id:
@@ -463,24 +386,101 @@ components:
       - organisation
       - roles
       title: DeviceApp
-    CreateDeviceAppInput:
+    Page_DeviceApp_:
       properties:
-        name:
-          type: string
-          maxLength: 40
-          minLength: 3
-          pattern: ^[a-z0-9]+[a-z0-9-]+$
-          title: Name
+        items:
+          items:
+            $ref: '#/components/schemas/DeviceApp'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[DeviceApp]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RoleNamesInput:
+      properties:
         role_names:
           items:
             type: string
           type: array
           title: Role Names
+          default: []
+      type: object
+      title: RoleNamesInput
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    RoleWithoutPermissions:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        organisation:
+          anyOf:
+          - $ref: '#/components/schemas/Organisation'
+          - type: 'null'
       type: object
       required:
       - name
-      - role_names
-      title: CreateDeviceAppInput
+      title: RoleWithoutPermissions
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

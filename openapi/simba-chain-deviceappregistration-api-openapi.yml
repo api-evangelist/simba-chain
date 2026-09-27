@@ -336,55 +336,6 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    Page_DeviceAppRegistration_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/DeviceAppRegistration'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[DeviceAppRegistration]
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    DeviceAppSlim:
-      properties:
-        name:
-          type: string
-          title: Name
-      type: object
-      required:
-      - name
-      title: DeviceAppSlim
     CreateDeviceAppRegistration:
       properties:
         device_info:
@@ -420,14 +371,32 @@ components:
       - registrant_public_key_multicodec
       - device_public_key_multicodec
       title: CreateDeviceAppRegistration
-    DeviceAppRegistrationStatus:
-      type: string
-      enum:
-      - in-progress
-      - complete
-      - failed
-      - revoked
-      title: DeviceAppRegistrationStatus
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     UpdateDeviceAppRegistrationInput:
       properties:
         status:
@@ -541,32 +510,63 @@ components:
       - registrant_public_key_hex
       - device_app
       title: DeviceAppRegistration
-    ValidationError:
+    Page_DeviceAppRegistration_:
       properties:
-        loc:
+        items:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/DeviceAppRegistration'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
       type: object
       required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[DeviceAppRegistration]
+    DeviceAppRegistrationStatus:
+      type: string
+      enum:
+      - in-progress
+      - complete
+      - failed
+      - revoked
+      title: DeviceAppRegistrationStatus
+    DeviceAppSlim:
+      properties:
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: DeviceAppSlim
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

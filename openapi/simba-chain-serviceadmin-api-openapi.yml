@@ -115,23 +115,100 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    DomainConfigurationStatus:
-      type: string
-      enum:
-      - RUNNING
-      - COMPLETED
-      - PARTIAL
-      - FAILED
-      title: DomainConfigurationStatus
-    HTTPValidationError:
+    DomainConfiguration:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        member_service_did_id:
+          anyOf:
+          - type: string
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Service Did Id
+        trust_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trust Profile
+        apps_claim_schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps Claim Schema
       type: object
-      title: HTTPValidationError
+      title: DomainConfiguration
+    RedactedGenericConfiguration:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: string
+            format: password
+            writeOnly: true
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+      type: object
+      title: RedactedGenericConfiguration
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    GenericConfigurationRequest:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
+      type: object
+      required:
+      - status
+      title: GenericConfigurationRequest
     ServiceConfigurations:
       properties:
         id:
@@ -171,74 +248,6 @@ components:
           title: State
       type: object
       title: ServiceConfigurations
-    DomainConfiguration:
-      properties:
-        member_service_did_id:
-          anyOf:
-          - type: string
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Service Did Id
-        trust_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Trust Profile
-        apps_claim_schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apps Claim Schema
-      type: object
-      title: DomainConfiguration
-    GenericConfigurationRequest:
-      properties:
-        member_client_cred_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Client Cred Id
-        member_client_cred_secret:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Secret
-        member_client_cred_simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Simba Id
-        status:
-          $ref: '#/components/schemas/DomainConfigurationStatus'
-      type: object
-      required:
-      - status
-      title: GenericConfigurationRequest
-    RedactedGenericConfiguration:
-      properties:
-        member_client_cred_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Client Cred Id
-        member_client_cred_secret:
-          anyOf:
-          - type: string
-          - type: string
-            format: password
-            writeOnly: true
-          - type: 'null'
-          title: Member Client Cred Secret
-        member_client_cred_simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Simba Id
-      type: object
-      title: RedactedGenericConfiguration
     DomainConfigurationRequest:
       properties:
         member_service_did_id:
@@ -264,32 +273,23 @@ components:
       required:
       - status
       title: DomainConfigurationRequest
-    ValidationError:
+    DomainConfigurationStatus:
+      type: string
+      enum:
+      - RUNNING
+      - COMPLETED
+      - PARTIAL
+      - FAILED
+      title: DomainConfigurationStatus
+    HTTPValidationError:
       properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

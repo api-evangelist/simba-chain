@@ -160,6 +160,32 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     PasskeyRenameRequest:
       properties:
         nickname:
@@ -171,15 +197,27 @@ components:
       required:
       - nickname
       title: PasskeyRenameRequest
-    HTTPValidationError:
+    PasskeyRegisterVerifyRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        nickname:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Nickname
+        credential:
+          additionalProperties: true
+          type: object
+          title: Credential
       type: object
-      title: HTTPValidationError
+      required:
+      - nickname
+      - credential
+      title: PasskeyRegisterVerifyRequest
+      description: '``POST /register/verify`` body — the attestation JSON from
+
+        ``@simplewebauthn/browser startRegistration`` plus the
+
+        user-chosen nickname.'
     PasskeyResponse:
       properties:
         id:
@@ -229,53 +267,15 @@ components:
         bytes never cross the HTTP boundary (audit events follow the
 
         same rule).'
-    PasskeyRegisterVerifyRequest:
+    HTTPValidationError:
       properties:
-        nickname:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Nickname
-        credential:
-          additionalProperties: true
-          type: object
-          title: Credential
-      type: object
-      required:
-      - nickname
-      - credential
-      title: PasskeyRegisterVerifyRequest
-      description: '``POST /register/verify`` body — the attestation JSON from
-
-        ``@simplewebauthn/browser startRegistration`` plus the
-
-        user-chosen nickname.'
-    ValidationError:
-      properties:
-        loc:
+        detail:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/ValidationError'
           type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
+          title: Detail
       type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
+      title: HTTPValidationError
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

@@ -33,14 +33,6 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    RepublishEventChoices:
-      type: string
-      enum:
-      - organisation-added
-      - domain-added
-      - identity-added
-      - identity-added-to-org-domain
-      title: RepublishEventChoices
     RepublishEventsInput:
       properties:
         event_choices:
@@ -88,6 +80,14 @@ components:
       - msg
       - type
       title: ValidationError
+    RepublishEventChoices:
+      type: string
+      enum:
+      - organisation-added
+      - domain-added
+      - identity-added
+      - identity-added-to-org-domain
+      title: RepublishEventChoices
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

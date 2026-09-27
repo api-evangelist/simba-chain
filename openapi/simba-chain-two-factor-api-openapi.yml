@@ -228,72 +228,6 @@ components:
       - code
       title: TotpCodeRequest
       description: Body shape for every code-gated endpoint.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    TotpSetupResponse:
-      properties:
-        secret:
-          type: string
-          title: Secret
-        qr_svg:
-          type: string
-          title: Qr Svg
-        provisioning_uri:
-          type: string
-          title: Provisioning Uri
-      type: object
-      required:
-      - secret
-      - qr_svg
-      - provisioning_uri
-      title: TotpSetupResponse
-      description: '``GET /account/security/2fa/setup`` payload.'
-    TotpRecoveryCodesResponse:
-      properties:
-        recovery_codes:
-          items:
-            type: string
-          type: array
-          title: Recovery Codes
-      type: object
-      required:
-      - recovery_codes
-      title: TotpRecoveryCodesResponse
-      description: 'Body for endpoints that return plaintext recovery codes
-
-        (one-shot generation + re-display).'
-    TotpStatusResponse:
-      properties:
-        enabled:
-          type: boolean
-          title: Enabled
-        has_pending_enrolment:
-          type: boolean
-          title: Has Pending Enrolment
-        has_recovery_codes_pending_acknowledgement:
-          type: boolean
-          title: Has Recovery Codes Pending Acknowledgement
-      type: object
-      required:
-      - enabled
-      - has_pending_enrolment
-      - has_recovery_codes_pending_acknowledgement
-      title: TotpStatusResponse
-      description: '``GET /account/security/2fa`` payload.
-
-
-        ``enabled`` is true when ``totp_enabled_at IS NOT NULL``.
-
-        ``has_pending_enrolment`` lets the SPA show "you have an
-
-        in-flight enrolment" without leaking the pending secret itself.'
     ValidationError:
       properties:
         loc:
@@ -320,6 +254,72 @@ components:
       - msg
       - type
       title: ValidationError
+    TotpSetupResponse:
+      properties:
+        secret:
+          type: string
+          title: Secret
+        qr_svg:
+          type: string
+          title: Qr Svg
+        provisioning_uri:
+          type: string
+          title: Provisioning Uri
+      type: object
+      required:
+      - secret
+      - qr_svg
+      - provisioning_uri
+      title: TotpSetupResponse
+      description: '``GET /account/security/2fa/setup`` payload.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    TotpStatusResponse:
+      properties:
+        enabled:
+          type: boolean
+          title: Enabled
+        has_pending_enrolment:
+          type: boolean
+          title: Has Pending Enrolment
+        has_recovery_codes_pending_acknowledgement:
+          type: boolean
+          title: Has Recovery Codes Pending Acknowledgement
+      type: object
+      required:
+      - enabled
+      - has_pending_enrolment
+      - has_recovery_codes_pending_acknowledgement
+      title: TotpStatusResponse
+      description: '``GET /account/security/2fa`` payload.
+
+
+        ``enabled`` is true when ``totp_enabled_at IS NOT NULL``.
+
+        ``has_pending_enrolment`` lets the SPA show "you have an
+
+        in-flight enrolment" without leaking the pending secret itself.'
+    TotpRecoveryCodesResponse:
+      properties:
+        recovery_codes:
+          items:
+            type: string
+          type: array
+          title: Recovery Codes
+      type: object
+      required:
+      - recovery_codes
+      title: TotpRecoveryCodesResponse
+      description: 'Body for endpoints that return plaintext recovery codes
+
+        (one-shot generation + re-display).'
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2
