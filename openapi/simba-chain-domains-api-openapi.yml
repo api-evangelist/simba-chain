@@ -267,6 +267,43 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    UpdateDomainInput:
+      properties:
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        default_role_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Default Role Names
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+      type: object
+      title: UpdateDomainInput
+    AddDomainOrganisationInput:
+      properties:
+        organisation_name:
+          type: string
+          title: Organisation Name
+      type: object
+      required:
+      - organisation_name
+      title: AddDomainOrganisationInput
     Organisation:
       properties:
         id:
@@ -343,64 +380,6 @@ components:
       required:
       - name
       title: RoleWithoutPermissions
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    UpdateDomainInput:
-      properties:
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        default_role_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Default Role Names
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-      type: object
-      title: UpdateDomainInput
-    OrganisationName:
-      properties:
-        name:
-          type: string
-          maxLength: 40
-          minLength: 3
-          pattern: ^[a-z0-9]+[a-z0-9-]+$
-          title: Name
-      type: object
-      required:
-      - name
-      title: OrganisationName
     DomainWithDefaultRoles:
       properties:
         id:
@@ -455,15 +434,15 @@ components:
       - is_domain
       - organisations
       title: DomainWithDefaultRoles
-    RemoveDomainOrganisationInput:
+    HTTPValidationError:
       properties:
-        organisation_name:
-          type: string
-          title: Organisation Name
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
       type: object
-      required:
-      - organisation_name
-      title: RemoveDomainOrganisationInput
+      title: HTTPValidationError
     CreateDomainInput:
       properties:
         display_name:
@@ -497,23 +476,41 @@ components:
       required:
       - name
       title: CreateDomainInput
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
-    HTTPValidationError:
+    RemoveDomainOrganisationInput:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        organisation_name:
+          type: string
+          title: Organisation Name
       type: object
-      title: HTTPValidationError
+      required:
+      - organisation_name
+      title: RemoveDomainOrganisationInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     Page_Domain_:
       properties:
         items:
@@ -591,15 +588,18 @@ components:
       - is_domain
       - organisations
       title: Domain
-    AddDomainOrganisationInput:
+    OrganisationName:
       properties:
-        organisation_name:
+        name:
           type: string
-          title: Organisation Name
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
       type: object
       required:
-      - organisation_name
-      title: AddDomainOrganisationInput
+      - name
+      title: OrganisationName
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

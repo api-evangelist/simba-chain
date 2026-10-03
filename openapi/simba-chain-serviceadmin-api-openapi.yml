@@ -115,28 +115,7 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    DomainConfiguration:
-      properties:
-        member_service_did_id:
-          anyOf:
-          - type: string
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Service Did Id
-        trust_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Trust Profile
-        apps_claim_schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apps Claim Schema
-      type: object
-      title: DomainConfiguration
-    RedactedGenericConfiguration:
+    GenericConfigurationRequest:
       properties:
         member_client_cred_id:
           anyOf:
@@ -147,9 +126,6 @@ components:
         member_client_cred_secret:
           anyOf:
           - type: string
-          - type: string
-            format: password
-            writeOnly: true
           - type: 'null'
           title: Member Client Cred Secret
         member_client_cred_simba_id:
@@ -157,8 +133,21 @@ components:
           - type: string
           - type: 'null'
           title: Member Client Cred Simba Id
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
       type: object
-      title: RedactedGenericConfiguration
+      required:
+      - status
+      title: GenericConfigurationRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -185,7 +174,61 @@ components:
       - msg
       - type
       title: ValidationError
-    GenericConfigurationRequest:
+    DomainConfiguration:
+      properties:
+        member_service_did_id:
+          anyOf:
+          - type: string
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Service Did Id
+        trust_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trust Profile
+        apps_claim_schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps Claim Schema
+      type: object
+      title: DomainConfiguration
+    DomainConfigurationRequest:
+      properties:
+        member_service_did_id:
+          anyOf:
+          - type: string
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Service Did Id
+        trust_profile:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Trust Profile
+        apps_claim_schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Apps Claim Schema
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
+      type: object
+      required:
+      - status
+      title: DomainConfigurationRequest
+    DomainConfigurationStatus:
+      type: string
+      enum:
+      - RUNNING
+      - COMPLETED
+      - PARTIAL
+      - FAILED
+      title: DomainConfigurationStatus
+    RedactedGenericConfiguration:
       properties:
         member_client_cred_id:
           anyOf:
@@ -196,6 +239,9 @@ components:
         member_client_cred_secret:
           anyOf:
           - type: string
+          - type: string
+            format: password
+            writeOnly: true
           - type: 'null'
           title: Member Client Cred Secret
         member_client_cred_simba_id:
@@ -203,12 +249,8 @@ components:
           - type: string
           - type: 'null'
           title: Member Client Cred Simba Id
-        status:
-          $ref: '#/components/schemas/DomainConfigurationStatus'
       type: object
-      required:
-      - status
-      title: GenericConfigurationRequest
+      title: RedactedGenericConfiguration
     ServiceConfigurations:
       properties:
         id:
@@ -248,48 +290,6 @@ components:
           title: State
       type: object
       title: ServiceConfigurations
-    DomainConfigurationRequest:
-      properties:
-        member_service_did_id:
-          anyOf:
-          - type: string
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Service Did Id
-        trust_profile:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Trust Profile
-        apps_claim_schema:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Apps Claim Schema
-        status:
-          $ref: '#/components/schemas/DomainConfigurationStatus'
-      type: object
-      required:
-      - status
-      title: DomainConfigurationRequest
-    DomainConfigurationStatus:
-      type: string
-      enum:
-      - RUNNING
-      - COMPLETED
-      - PARTIAL
-      - FAILED
-      title: DomainConfigurationStatus
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

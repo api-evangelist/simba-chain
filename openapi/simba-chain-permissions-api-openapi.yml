@@ -298,6 +298,11 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    Effect:
+      type: string
+      enum:
+      - allow
+      title: Effect
     Page_Permission_:
       properties:
         items:
@@ -329,71 +334,6 @@ components:
       - size
       - pages
       title: Page[Permission]
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    IdentityPermissionItem:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        name:
-          type: string
-          title: Name
-        is_org_scoped:
-          type: boolean
-          title: Is Org Scoped
-        org_domain_name:
-          type: string
-          title: Org Domain Name
-        service:
-          type: string
-          title: Service
-        resource:
-          type: string
-          title: Resource
-        action:
-          type: string
-          title: Action
-      type: object
-      required:
-      - id
-      - name
-      - is_org_scoped
-      - org_domain_name
-      - service
-      - resource
-      - action
-      title: IdentityPermissionItem
-    Effect:
-      type: string
-      enum:
-      - allow
-      title: Effect
     Permission:
       properties:
         name:
@@ -461,6 +401,74 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
+    IdentityPermissionItem:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        name:
+          type: string
+          title: Name
+        is_org_scoped:
+          type: boolean
+          title: Is Org Scoped
+        org_domain_name:
+          type: string
+          title: Org Domain Name
+        service:
+          type: string
+          title: Service
+        resource:
+          type: string
+          title: Resource
+        action:
+          type: string
+          title: Action
+      type: object
+      required:
+      - id
+      - name
+      - is_org_scoped
+      - org_domain_name
+      - service
+      - resource
+      - action
+      title: IdentityPermissionItem
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
     OrgScopedPermission:
       properties:
         name:
@@ -561,28 +569,6 @@ components:
 
 
         The field `name` is unique.'
-    SyncServicePermissions:
-      properties:
-        service:
-          type: string
-          title: Service
-        permissions:
-          items:
-            $ref: '#/components/schemas/SyncPermissionInput'
-          type: array
-          title: Permissions
-        roles:
-          items:
-            $ref: '#/components/schemas/SyncRoleInput'
-          type: array
-          title: Roles
-      type: object
-      required:
-      - service
-      - permissions
-      - roles
-      title: SyncServicePermissions
-      description: A model representing a service roles and permission to sync.
     SyncRoleInput:
       properties:
         is_org_role:
@@ -633,36 +619,28 @@ components:
       - identity
       - permissions
       title: GetIdentityPermissions
-    Identity:
+    SyncServicePermissions:
       properties:
-        id:
+        service:
           type: string
-          format: uuid
-          title: Id
-        simba_id:
-          type: string
-          title: Simba Id
-        urn:
-          type: string
-          title: Urn
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          title: Email
-        organisations:
+          title: Service
+        permissions:
           items:
-            $ref: '#/components/schemas/Organisation'
+            $ref: '#/components/schemas/SyncPermissionInput'
           type: array
-          title: Organisations
+          title: Permissions
+        roles:
+          items:
+            $ref: '#/components/schemas/SyncRoleInput'
+          type: array
+          title: Roles
       type: object
       required:
-      - id
-      - simba_id
-      - urn
-      - organisations
-      title: Identity
+      - service
+      - permissions
+      - roles
+      title: SyncServicePermissions
+      description: A model representing a service roles and permission to sync.
     SyncPermissionInput:
       properties:
         name:
@@ -707,14 +685,36 @@ components:
       - effect
       title: SyncPermissionInput
       description: A model representing a permission to sync.
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
+    Identity:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        simba_id:
+          type: string
+          title: Simba Id
+        urn:
+          type: string
+          title: Urn
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          title: Email
+        organisations:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+          title: Organisations
+      type: object
+      required:
+      - id
+      - simba_id
+      - urn
+      - organisations
+      title: Identity
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

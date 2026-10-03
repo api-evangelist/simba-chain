@@ -229,7 +229,7 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    UserMoniker:
+    BulkUsersImportRequest:
       properties:
         id:
           type: string
@@ -245,14 +245,30 @@ components:
             format: date-time
           - type: 'null'
           title: Updated At
-        email:
-          type: string
-          format: email
-          title: Email
+        status:
+          $ref: '#/components/schemas/BulkUsersImportTaskStatus'
+        errors:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: Errors
+        submitted_by:
+          $ref: '#/components/schemas/UserMoniker'
       type: object
       required:
-      - email
-      title: UserMoniker
+      - status
+      - submitted_by
+      title: BulkUsersImportRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -287,47 +303,6 @@ components:
       - completed
       - errored
       title: BulkUsersImportTaskStatus
-    Body_create_bulk_users_import_request_bulk_users_import_requests__post:
-      properties:
-        bulk_import_file:
-          type: string
-          contentMediaType: application/octet-stream
-          title: Bulk Import File
-      type: object
-      required:
-      - bulk_import_file
-      title: Body_create_bulk_users_import_request_bulk_users_import_requests__post
-    BulkUsersImportRequest:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        status:
-          $ref: '#/components/schemas/BulkUsersImportTaskStatus'
-        errors:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: Errors
-        submitted_by:
-          $ref: '#/components/schemas/UserMoniker'
-      type: object
-      required:
-      - status
-      - submitted_by
-      title: BulkUsersImportRequest
     Page_BulkUsersImportRequest_:
       properties:
         items:
@@ -359,15 +334,40 @@ components:
       - size
       - pages
       title: Page[BulkUsersImportRequest]
-    HTTPValidationError:
+    Body_create_bulk_users_import_request_bulk_users_import_requests__post:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        bulk_import_file:
+          type: string
+          contentMediaType: application/octet-stream
+          title: Bulk Import File
       type: object
-      title: HTTPValidationError
+      required:
+      - bulk_import_file
+      title: Body_create_bulk_users_import_request_bulk_users_import_requests__post
+    UserMoniker:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        email:
+          type: string
+          format: email
+          title: Email
+      type: object
+      required:
+      - email
+      title: UserMoniker
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

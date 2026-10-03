@@ -165,82 +165,6 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Page_Template_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Template'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[Template]
-    CreateTemplateInput:
-      properties:
-        name:
-          type: string
-          title: Name
-        template:
-          type: string
-          title: Template
-        parent_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Parent Id
-      type: object
-      required:
-      - name
-      - template
-      title: CreateTemplateInput
     Template:
       properties:
         id:
@@ -278,6 +202,72 @@ components:
 
 
         The field `name` is unique.'
+    Page_Template_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Template'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[Template]
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     UpdateTemplateInput:
       properties:
         name:
@@ -297,15 +287,25 @@ components:
       - name
       - template
       title: UpdateTemplateInput
-    HTTPValidationError:
+    CreateTemplateInput:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
+        name:
+          type: string
+          title: Name
+        template:
+          type: string
+          title: Template
+        parent_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Parent Id
       type: object
-      title: HTTPValidationError
+      required:
+      - name
+      - template
+      title: CreateTemplateInput
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

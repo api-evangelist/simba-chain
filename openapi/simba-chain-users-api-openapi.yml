@@ -1038,6 +1038,482 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
+    OrganisationWithRoles:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        is_domain:
+          type: boolean
+          title: Is Domain
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+        roles:
+          items:
+            $ref: '#/components/schemas/RoleMinimal'
+          type: array
+          title: Roles
+      type: object
+      required:
+      - name
+      - display_name
+      - is_domain
+      - roles
+      title: OrganisationWithRoles
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    OrgScopedUserAccount:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        email:
+          type: string
+          format: email
+          title: Email
+        email_verified:
+          type: boolean
+          title: Email Verified
+        last_login:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login
+        profile:
+          anyOf:
+          - $ref: '#/components/schemas/UserProfile'
+          - type: 'null'
+        organisations:
+          items:
+            $ref: '#/components/schemas/OrganisationWithRoles'
+          type: array
+          title: Organisations
+          default: []
+        simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Simba Id
+      type: object
+      required:
+      - email
+      - email_verified
+      title: OrgScopedUserAccount
+      description: 'A model representing a organisation user account.
+
+
+        The field `email` is unique.'
+    Page_OrgScopedUserAccount_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/OrgScopedUserAccount'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[OrgScopedUserAccount]
+    UserAccountSummary:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        email:
+          type: string
+          format: email
+          title: Email
+        last_login:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Last Login
+        profile:
+          anyOf:
+          - $ref: '#/components/schemas/UserProfile'
+          - type: 'null'
+        simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Simba Id
+      type: object
+      required:
+      - email
+      title: UserAccountSummary
+      description: 'A model representing a organisation user account.
+
+
+        The field `email` is unique.'
+    UpdateUserAccountInput:
+      properties:
+        password:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Password
+        default_organisation_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Default Organisation Id
+      type: object
+      title: UpdateUserAccountInput
+    CreateInviteSubOrgsInput:
+      properties:
+        organisation_name:
+          type: string
+          title: Organisation Name
+          description: The name of the sub organisation
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          minItems: 0
+          title: Role Ids
+          description: List of org role ids to assign to user for organisation
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          minItems: 0
+          title: Role Names
+          description: List of org role names to assign to user for organisation
+          default: []
+      type: object
+      required:
+      - organisation_name
+      title: CreateInviteSubOrgsInput
+    Organisation:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        is_domain:
+          type: boolean
+          title: Is Domain
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+      type: object
+      required:
+      - name
+      - display_name
+      - is_domain
+      title: Organisation
+      description: 'A model representing an organisation.
+
+
+        The field `name` is unique.'
+    UpdateUserProfileInput:
+      properties:
+        first_name:
+          type: string
+          title: First Name
+          description: First Name
+        last_name:
+          type: string
+          title: Last Name
+          description: Last Name
+      type: object
+      required:
+      - first_name
+      - last_name
+      title: UpdateUserProfileInput
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Page_UserAccountSummary_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/UserAccountSummary'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[UserAccountSummary]
+    UserProfile:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          type: string
+          title: Last Name
+        user_account_id:
+          type: string
+          format: uuid
+          title: User Account Id
+      type: object
+      required:
+      - first_name
+      - last_name
+      - user_account_id
+      title: UserProfile
+      description: A model representing a user profile.
+    UpdateIdentityRolesInput:
+      properties:
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Role Ids
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          title: Role Names
+          default: []
+      type: object
+      title: UpdateIdentityRolesInput
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    AdminAddUserToOrgDomain:
+      properties:
+        to_email:
+          type: string
+          format: email
+          title: To Email
+          description: Email of the user
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          minItems: 0
+          title: Role Ids
+          description: List of role ids to assign to user for the organisation/domain
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          minItems: 0
+          title: Role Names
+          description: List of role names to assign to user for organisation or domain
+          default: []
+        sub_organisations:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/CreateInviteSubOrgsInput'
+            type: array
+            minItems: 0
+          - type: 'null'
+          title: Sub Organisations
+          description: List of sub organisations for the domain
+        user_info:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateUserProfileInput'
+          - type: 'null'
+          description: Information of the user
+        is_default_org:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          title: Is Default Org
+          description: Flag to specify default organisation for the user
+      type: object
+      required:
+      - to_email
+      title: AdminAddUserToOrgDomain
+    RoleMinimal:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+      type: object
+      required:
+      - name
+      title: RoleMinimal
+    AddIdentityRolesInput:
+      properties:
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Role Ids
+          default: []
+        role_names:
+          items:
+            type: string
+          type: array
+          title: Role Names
+          default: []
+      type: object
+      title: AddIdentityRolesInput
     UserAccount:
       properties:
         id:
@@ -1118,482 +1594,6 @@ components:
       - email
       - email_verified
       title: UserAccount
-    UserProfile:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        first_name:
-          type: string
-          title: First Name
-        last_name:
-          type: string
-          title: Last Name
-        user_account_id:
-          type: string
-          format: uuid
-          title: User Account Id
-      type: object
-      required:
-      - first_name
-      - last_name
-      - user_account_id
-      title: UserProfile
-      description: A model representing a user profile.
-    AddIdentityRolesInput:
-      properties:
-        role_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          title: Role Ids
-          default: []
-        role_names:
-          items:
-            type: string
-          type: array
-          title: Role Names
-          default: []
-      type: object
-      title: AddIdentityRolesInput
-    OrganisationWithRoles:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          type: string
-          title: Name
-        display_name:
-          type: string
-          title: Display Name
-        is_domain:
-          type: boolean
-          title: Is Domain
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-        roles:
-          items:
-            $ref: '#/components/schemas/RoleMinimal'
-          type: array
-          title: Roles
-      type: object
-      required:
-      - name
-      - display_name
-      - is_domain
-      - roles
-      title: OrganisationWithRoles
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Organisation:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          type: string
-          title: Name
-        display_name:
-          type: string
-          title: Display Name
-        is_domain:
-          type: boolean
-          title: Is Domain
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-      type: object
-      required:
-      - name
-      - display_name
-      - is_domain
-      title: Organisation
-      description: 'A model representing an organisation.
-
-
-        The field `name` is unique.'
-    UserAccountSummary:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        email:
-          type: string
-          format: email
-          title: Email
-        last_login:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Login
-        profile:
-          anyOf:
-          - $ref: '#/components/schemas/UserProfile'
-          - type: 'null'
-        simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Simba Id
-      type: object
-      required:
-      - email
-      title: UserAccountSummary
-      description: 'A model representing a organisation user account.
-
-
-        The field `email` is unique.'
-    RoleMinimal:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          type: string
-          title: Name
-      type: object
-      required:
-      - name
-      title: RoleMinimal
-    Page_OrgScopedUserAccount_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/OrgScopedUserAccount'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[OrgScopedUserAccount]
-    UpdateUserProfileInput:
-      properties:
-        first_name:
-          type: string
-          title: First Name
-          description: First Name
-        last_name:
-          type: string
-          title: Last Name
-          description: Last Name
-      type: object
-      required:
-      - first_name
-      - last_name
-      title: UpdateUserProfileInput
-    CreateInviteSubOrgsInput:
-      properties:
-        organisation_name:
-          type: string
-          title: Organisation Name
-          description: The name of the sub organisation
-        role_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          minItems: 0
-          title: Role Ids
-          description: List of org role ids to assign to user for organisation
-          default: []
-        role_names:
-          items:
-            type: string
-          type: array
-          minItems: 0
-          title: Role Names
-          description: List of org role names to assign to user for organisation
-          default: []
-      type: object
-      required:
-      - organisation_name
-      title: CreateInviteSubOrgsInput
-    UpdateUserAccountInput:
-      properties:
-        password:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Password
-        default_organisation_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Default Organisation Id
-      type: object
-      title: UpdateUserAccountInput
-    OrgScopedUserAccount:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        email:
-          type: string
-          format: email
-          title: Email
-        email_verified:
-          type: boolean
-          title: Email Verified
-        last_login:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Last Login
-        profile:
-          anyOf:
-          - $ref: '#/components/schemas/UserProfile'
-          - type: 'null'
-        organisations:
-          items:
-            $ref: '#/components/schemas/OrganisationWithRoles'
-          type: array
-          title: Organisations
-          default: []
-        simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Simba Id
-      type: object
-      required:
-      - email
-      - email_verified
-      title: OrgScopedUserAccount
-      description: 'A model representing a organisation user account.
-
-
-        The field `email` is unique.'
-    AdminAddUserToOrgDomain:
-      properties:
-        to_email:
-          type: string
-          format: email
-          title: To Email
-          description: Email of the user
-        role_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          minItems: 0
-          title: Role Ids
-          description: List of role ids to assign to user for the organisation/domain
-          default: []
-        role_names:
-          items:
-            type: string
-          type: array
-          minItems: 0
-          title: Role Names
-          description: List of role names to assign to user for organisation or domain
-          default: []
-        sub_organisations:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/CreateInviteSubOrgsInput'
-            type: array
-            minItems: 0
-          - type: 'null'
-          title: Sub Organisations
-          description: List of sub organisations for the domain
-        user_info:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateUserProfileInput'
-          - type: 'null'
-          description: Information of the user
-        is_default_org:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          title: Is Default Org
-          description: Flag to specify default organisation for the user
-      type: object
-      required:
-      - to_email
-      title: AdminAddUserToOrgDomain
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    Page_UserAccountSummary_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/UserAccountSummary'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[UserAccountSummary]
-    UpdateIdentityRolesInput:
-      properties:
-        role_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          title: Role Ids
-          default: []
-        role_names:
-          items:
-            type: string
-          type: array
-          title: Role Names
-          default: []
-      type: object
-      title: UpdateIdentityRolesInput
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2
