@@ -1,0 +1,89 @@
+slug: simba-chain
+provider: SIMBA Chain
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 7
+edges:
+- tag: Passkeys
+  spec_file: simba-chain-passkeys-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: POST /account/security/passkeys/register/options; POST /account/security/passkeys/register/verify;
+    schema PasskeyRegisterVerifyRequest
+  reason: WebAuthn passkey credential registration, listing, rename and deletion under /account/security
+    — authentication credential lifecycle, squarely identity and access management.
+- tag: Two Factor
+  spec_file: simba-chain-two-factor-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.88
+  evidence: GET /account/security/2fa/setup; POST /account/security/2fa/disable; schemas TotpSetupResponse,
+    TotpRecoveryCodesResponse
+  reason: TOTP two-factor enrolment, verification, disabling and recovery-code management — authentication
+    strengthening, an identity and access management capability.
+- tag: Permissions
+  spec_file: simba-chain-permissions-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: GET /identity/{simba_id}/permissions/ "Get Identity Permissions By Simba Id"; schemas OrgScopedPermission,
+    Effect, Identity
+  reason: Operations read and synchronise permissions attached to identities, org-scoped, with allow/deny
+    effects — authorisation model administration, i.e. identity and access management.
+- tag: Roles
+  spec_file: simba-chain-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /custom_system_roles/ "Create Custom System Role"; POST /organisations/{organisation_name}/roles/
+    "Create Org Scoped Role"; schema RoleWithFlags, Permission
+  reason: CRUD over system and organisation-scoped roles bundling permissions — role-based access control
+    administration, an identity and access management capability.
+- tag: Users
+  spec_file: simba-chain-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: GET /user_accounts/whoami/; PUT /organisations/{organisation_name}/users/{user_account_id}/roles/
+    "Update Organisation User Account Roles"
+  reason: User account CRUD, profile maintenance and assignment/removal of organisation-scoped roles.
+    These are platform user identities and entitlements, not HR employee records, so identity and access
+    management is the honest mapping.
+- tag: Invites
+  spec_file: simba-chain-invites-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.72
+  evidence: POST /organisations/{organisation_name}/invites/ "Create Organisation Invite"; "Accept New
+    User Invite"; "Revoke Organisation Invite"
+  reason: Operations manage invitation of users into an organisation and acceptance/revocation of those
+    invites — user account provisioning into access scopes, i.e. identity and access administration (joiners).
+    Not a business-domain capability of the blockchain traceability product itself.
+- tag: Client Credentials
+  spec_file: simba-chain-client-credentials-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: '"Create Client Credential", "Revoke Client Credential", "Update Client Credential Roles",
+    "Refresh Client Credential Secret"'
+  reason: Issuance, revocation, secret rotation and role assignment for machine credentials scoped to
+    organisations — credential and access-rights administration, i.e. identity & access management. Could
+    alternatively be read as developer credential management (BC-4270.40), but the role/permission model
+    points at internal IAM rather than an external developer programme.

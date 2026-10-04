@@ -597,6 +597,9 @@ apis:
   - type: APIReference
     url: https://blocks.simbachain.com/api/member-service-validator/docs
 common:
+- type: CapabilityMap
+  url: capabilities/simba-chain-capability-edges.yml
+  name: SIMBA Chain Business Capability Map
 - type: Overlay
   url: overlays/simba-chain-member-service-overlay.yaml
 - type: Overlay
