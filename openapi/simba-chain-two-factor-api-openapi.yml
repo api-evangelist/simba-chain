@@ -216,6 +216,44 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
+    TotpCodeRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Code
+      type: object
+      required:
+      - code
+      title: TotpCodeRequest
+      description: Body shape for every code-gated endpoint.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
     TotpSetupResponse:
       properties:
         secret:
@@ -268,32 +306,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
     TotpRecoveryCodesResponse:
       properties:
         recovery_codes:
@@ -308,18 +320,6 @@ components:
       description: 'Body for endpoints that return plaintext recovery codes
 
         (one-shot generation + re-display).'
-    TotpCodeRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Code
-      type: object
-      required:
-      - code
-      title: TotpCodeRequest
-      description: Body shape for every code-gated endpoint.
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

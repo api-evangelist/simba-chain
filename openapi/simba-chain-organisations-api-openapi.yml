@@ -232,14 +232,63 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    Page_Organisation_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[Organisation]
     CreateOrganisationInput:
       properties:
         display_name:
@@ -268,6 +317,26 @@ components:
       required:
       - name
       title: CreateOrganisationInput
+    UpdateOrganisationInput:
+      properties:
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        default_role_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Default Role Names
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+      type: object
+      title: UpdateOrganisationInput
     Organisation:
       properties:
         id:
@@ -344,6 +413,18 @@ components:
       required:
       - name
       title: RoleWithoutPermissions
+    OrganisationName:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
+      type: object
+      required:
+      - name
+      title: OrganisationName
     HTTPValidationError:
       properties:
         detail:
@@ -353,83 +434,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Page_Organisation_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Organisation'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[Organisation]
-    UpdateOrganisationInput:
-      properties:
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        default_role_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Default Role Names
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-      type: object
-      title: UpdateOrganisationInput
     OrganisationWithDefaultRoles:
       properties:
         id:
@@ -473,18 +477,14 @@ components:
       - display_name
       - is_domain
       title: OrganisationWithDefaultRoles
-    OrganisationName:
-      properties:
-        name:
-          type: string
-          maxLength: 40
-          minLength: 3
-          pattern: ^[a-z0-9]+[a-z0-9-]+$
-          title: Name
-      type: object
-      required:
-      - name
-      title: OrganisationName
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

@@ -65,6 +65,21 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
+    PingResponses:
+      properties:
+        service:
+          type: string
+          title: Service
+        responses:
+          items:
+            $ref: '#/components/schemas/PingResponse'
+          type: array
+          title: Responses
+      type: object
+      required:
+      - service
+      - responses
+      title: PingResponses
     PingResponse:
       properties:
         component:
@@ -83,21 +98,6 @@ components:
       - component
       - success
       title: PingResponse
-    PingResponses:
-      properties:
-        service:
-          type: string
-          title: Service
-        responses:
-          items:
-            $ref: '#/components/schemas/PingResponse'
-          type: array
-          title: Responses
-      type: object
-      required:
-      - service
-      - responses
-      title: PingResponses
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

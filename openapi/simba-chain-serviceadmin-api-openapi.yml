@@ -115,39 +115,6 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    GenericConfigurationRequest:
-      properties:
-        member_client_cred_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Client Cred Id
-        member_client_cred_secret:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Secret
-        member_client_cred_simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Simba Id
-        status:
-          $ref: '#/components/schemas/DomainConfigurationStatus'
-      type: object
-      required:
-      - status
-      title: GenericConfigurationRequest
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
     ValidationError:
       properties:
         loc:
@@ -174,6 +141,109 @@ components:
       - msg
       - type
       title: ValidationError
+    GenericConfigurationRequest:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+        status:
+          $ref: '#/components/schemas/DomainConfigurationStatus'
+      type: object
+      required:
+      - status
+      title: GenericConfigurationRequest
+    DomainConfigurationStatus:
+      type: string
+      enum:
+      - RUNNING
+      - COMPLETED
+      - PARTIAL
+      - FAILED
+      title: DomainConfigurationStatus
+    ServiceConfigurations:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Name
+        config_status:
+          anyOf:
+          - $ref: '#/components/schemas/DomainConfigurationStatus'
+          - type: 'null'
+        config:
+          anyOf:
+          - $ref: '#/components/schemas/DomainConfiguration'
+          - $ref: '#/components/schemas/RedactedGenericConfiguration'
+          - type: 'null'
+          title: Config
+        state:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          title: State
+      type: object
+      title: ServiceConfigurations
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    RedactedGenericConfiguration:
+      properties:
+        member_client_cred_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          title: Member Client Cred Id
+        member_client_cred_secret:
+          anyOf:
+          - type: string
+          - type: string
+            format: password
+            writeOnly: true
+          - type: 'null'
+          title: Member Client Cred Secret
+        member_client_cred_simba_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Member Client Cred Simba Id
+      type: object
+      title: RedactedGenericConfiguration
     DomainConfiguration:
       properties:
         member_service_did_id:
@@ -220,76 +290,6 @@ components:
       required:
       - status
       title: DomainConfigurationRequest
-    DomainConfigurationStatus:
-      type: string
-      enum:
-      - RUNNING
-      - COMPLETED
-      - PARTIAL
-      - FAILED
-      title: DomainConfigurationStatus
-    RedactedGenericConfiguration:
-      properties:
-        member_client_cred_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          title: Member Client Cred Id
-        member_client_cred_secret:
-          anyOf:
-          - type: string
-          - type: string
-            format: password
-            writeOnly: true
-          - type: 'null'
-          title: Member Client Cred Secret
-        member_client_cred_simba_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Member Client Cred Simba Id
-      type: object
-      title: RedactedGenericConfiguration
-    ServiceConfigurations:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        config_status:
-          anyOf:
-          - $ref: '#/components/schemas/DomainConfigurationStatus'
-          - type: 'null'
-        config:
-          anyOf:
-          - $ref: '#/components/schemas/DomainConfiguration'
-          - $ref: '#/components/schemas/RedactedGenericConfiguration'
-          - type: 'null'
-          title: Config
-        state:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          title: State
-      type: object
-      title: ServiceConfigurations
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

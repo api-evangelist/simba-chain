@@ -582,21 +582,40 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
-    Effect:
-      type: string
-      enum:
-      - allow
-      title: Effect
-    CreateCustomOrgRoleInput:
+    ValidationError:
       properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateCustomSystemRoleInput:
+      properties:
+        is_org_role:
+          type: boolean
+          title: Is Org Role
+        is_domain_role:
+          type: boolean
+          title: Is Domain Role
         name:
           type: string
           title: Name
@@ -618,10 +637,69 @@ components:
           type: array
           title: Inherited Roles
           default: []
+        is_global:
+          type: boolean
+          title: Is Global
+      type: object
+      required:
+      - is_org_role
+      - is_domain_role
+      - name
+      - is_global
+      title: CreateCustomSystemRoleInput
+    RoleWithFlags:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        description:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Description
+        organisation:
+          anyOf:
+          - $ref: '#/components/schemas/Organisation'
+          - type: 'null'
+        is_org_role:
+          type: boolean
+          title: Is Org Role
+        is_domain_role:
+          type: boolean
+          title: Is Domain Role
+        is_global:
+          type: boolean
+          title: Is Global
+        is_custom_role:
+          type: boolean
+          title: Is Custom Role
       type: object
       required:
       - name
-      title: CreateCustomOrgRoleInput
+      - is_org_role
+      - is_domain_role
+      - is_global
+      - is_custom_role
+      title: RoleWithFlags
     Role:
       properties:
         is_org_role:
@@ -747,59 +825,38 @@ components:
       - effect
       title: Permission
       description: A model representing a permission.
-    RoleWithFlags:
+    UpdateCustomRoleInput:
       properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
+        name:
           anyOf:
           - type: string
-            format: date-time
           - type: 'null'
-          title: Updated At
-        name:
-          type: string
           title: Name
         display_name:
           anyOf:
           - type: string
+            maxLength: 255
           - type: 'null'
           title: Display Name
         description:
           anyOf:
           - type: string
+            maxLength: 1000
           - type: 'null'
           title: Description
-        organisation:
-          anyOf:
-          - $ref: '#/components/schemas/Organisation'
-          - type: 'null'
-        is_org_role:
-          type: boolean
-          title: Is Org Role
-        is_domain_role:
-          type: boolean
-          title: Is Domain Role
-        is_global:
-          type: boolean
-          title: Is Global
-        is_custom_role:
-          type: boolean
-          title: Is Custom Role
+        inherited_roles:
+          items:
+            type: string
+          type: array
+          title: Inherited Roles
+          default: []
       type: object
-      required:
-      - name
-      - is_org_role
-      - is_domain_role
-      - is_global
-      - is_custom_role
-      title: RoleWithFlags
+      title: UpdateCustomRoleInput
+    Effect:
+      type: string
+      enum:
+      - allow
+      title: Effect
     Organisation:
       properties:
         id:
@@ -876,45 +933,6 @@ components:
       required:
       - name
       title: RoleWithoutPermissions
-    CreateCustomSystemRoleInput:
-      properties:
-        is_org_role:
-          type: boolean
-          title: Is Org Role
-        is_domain_role:
-          type: boolean
-          title: Is Domain Role
-        name:
-          type: string
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Display Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Description
-        inherited_roles:
-          items:
-            type: string
-          type: array
-          title: Inherited Roles
-          default: []
-        is_global:
-          type: boolean
-          title: Is Global
-      type: object
-      required:
-      - is_org_role
-      - is_domain_role
-      - name
-      - is_global
-      title: CreateCustomSystemRoleInput
     HTTPValidationError:
       properties:
         detail:
@@ -924,90 +942,6 @@ components:
           title: Detail
       type: object
       title: HTTPValidationError
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Page_RoleWithoutPermissions_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/RoleWithoutPermissions'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[RoleWithoutPermissions]
-    UpdateCustomRoleInput:
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Name
-        display_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          title: Display Name
-        description:
-          anyOf:
-          - type: string
-            maxLength: 1000
-          - type: 'null'
-          title: Description
-        inherited_roles:
-          items:
-            type: string
-          type: array
-          title: Inherited Roles
-          default: []
-      type: object
-      title: UpdateCustomRoleInput
     Page_RoleWithFlags_:
       properties:
         items:
@@ -1039,6 +973,72 @@ components:
       - size
       - pages
       title: Page[RoleWithFlags]
+    CreateCustomOrgRoleInput:
+      properties:
+        name:
+          type: string
+          title: Name
+        display_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          title: Display Name
+        description:
+          anyOf:
+          - type: string
+            maxLength: 1000
+          - type: 'null'
+          title: Description
+        inherited_roles:
+          items:
+            type: string
+          type: array
+          title: Inherited Roles
+          default: []
+      type: object
+      required:
+      - name
+      title: CreateCustomOrgRoleInput
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
+    Page_RoleWithoutPermissions_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/RoleWithoutPermissions'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[RoleWithoutPermissions]
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

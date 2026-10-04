@@ -160,47 +160,6 @@ paths:
                 $ref: '#/components/schemas/HTTPValidationError'
 components:
   schemas:
-    PasskeyRegisterVerifyRequest:
-      properties:
-        nickname:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Nickname
-        credential:
-          additionalProperties: true
-          type: object
-          title: Credential
-      type: object
-      required:
-      - nickname
-      - credential
-      title: PasskeyRegisterVerifyRequest
-      description: '``POST /register/verify`` body — the attestation JSON from
-
-        ``@simplewebauthn/browser startRegistration`` plus the
-
-        user-chosen nickname.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    PasskeyRenameRequest:
-      properties:
-        nickname:
-          type: string
-          maxLength: 64
-          minLength: 1
-          title: Nickname
-      type: object
-      required:
-      - nickname
-      title: PasskeyRenameRequest
     ValidationError:
       properties:
         loc:
@@ -227,6 +186,27 @@ components:
       - msg
       - type
       title: ValidationError
+    PasskeyRegisterVerifyRequest:
+      properties:
+        nickname:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Nickname
+        credential:
+          additionalProperties: true
+          type: object
+          title: Credential
+      type: object
+      required:
+      - nickname
+      - credential
+      title: PasskeyRegisterVerifyRequest
+      description: '``POST /register/verify`` body — the attestation JSON from
+
+        ``@simplewebauthn/browser startRegistration`` plus the
+
+        user-chosen nickname.'
     PasskeyResponse:
       properties:
         id:
@@ -276,6 +256,26 @@ components:
         bytes never cross the HTTP boundary (audit events follow the
 
         same rule).'
+    PasskeyRenameRequest:
+      properties:
+        nickname:
+          type: string
+          maxLength: 64
+          minLength: 1
+          title: Nickname
+      type: object
+      required:
+      - nickname
+      title: PasskeyRenameRequest
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2

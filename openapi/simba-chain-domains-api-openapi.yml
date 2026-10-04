@@ -267,14 +267,151 @@ paths:
       - OAuth2AuthorizationCodeBearer: []
 components:
   schemas:
-    SystemTypes:
-      type: string
-      enum:
-      - ensure
-      - build
-      - dpp
-      - see
-      title: SystemTypes
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError
+    CreateDomainInput:
+      properties:
+        display_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Display Name
+        default_role_names:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          title: Default Role Names
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+        name:
+          type: string
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
+        reference_domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reference Domain
+      type: object
+      required:
+      - name
+      title: CreateDomainInput
+    Domain:
+      properties:
+        id:
+          type: string
+          format: uuid
+          title: Id
+        created_at:
+          type: string
+          format: date-time
+          title: Created At
+        updated_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          title: Updated At
+        name:
+          type: string
+          title: Name
+        display_name:
+          type: string
+          title: Display Name
+        is_domain:
+          type: boolean
+          title: Is Domain
+        system_type:
+          anyOf:
+          - $ref: '#/components/schemas/SystemTypes'
+          - type: 'null'
+        organisations:
+          items:
+            $ref: '#/components/schemas/Organisation'
+          type: array
+          title: Organisations
+        reference_domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Reference Domain
+      type: object
+      required:
+      - name
+      - display_name
+      - is_domain
+      - organisations
+      title: Domain
+    RemoveDomainOrganisationInput:
+      properties:
+        organisation_name:
+          type: string
+          title: Organisation Name
+      type: object
+      required:
+      - organisation_name
+      title: RemoveDomainOrganisationInput
+    Page_Domain_:
+      properties:
+        items:
+          items:
+            $ref: '#/components/schemas/Domain'
+          type: array
+          title: Items
+        total:
+          type: integer
+          minimum: 0.0
+          title: Total
+        page:
+          type: integer
+          minimum: 1.0
+          title: Page
+        size:
+          type: integer
+          minimum: 1.0
+          title: Size
+        pages:
+          type: integer
+          minimum: 0.0
+          title: Pages
+      type: object
+      required:
+      - items
+      - total
+      - page
+      - size
+      - pages
+      title: Page[Domain]
     UpdateDomainInput:
       properties:
         display_name:
@@ -295,15 +432,6 @@ components:
           - type: 'null'
       type: object
       title: UpdateDomainInput
-    AddDomainOrganisationInput:
-      properties:
-        organisation_name:
-          type: string
-          title: Organisation Name
-      type: object
-      required:
-      - organisation_name
-      title: AddDomainOrganisationInput
     Organisation:
       properties:
         id:
@@ -380,6 +508,36 @@ components:
       required:
       - name
       title: RoleWithoutPermissions
+    OrganisationName:
+      properties:
+        name:
+          type: string
+          maxLength: 40
+          minLength: 3
+          pattern: ^[a-z0-9]+[a-z0-9-]+$
+          title: Name
+      type: object
+      required:
+      - name
+      title: OrganisationName
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    AddDomainOrganisationInput:
+      properties:
+        organisation_name:
+          type: string
+          title: Organisation Name
+      type: object
+      required:
+      - organisation_name
+      title: AddDomainOrganisationInput
     DomainWithDefaultRoles:
       properties:
         id:
@@ -434,172 +592,14 @@ components:
       - is_domain
       - organisations
       title: DomainWithDefaultRoles
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-          title: Detail
-      type: object
-      title: HTTPValidationError
-    CreateDomainInput:
-      properties:
-        display_name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Display Name
-        default_role_names:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          title: Default Role Names
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-        name:
-          type: string
-          maxLength: 40
-          minLength: 3
-          pattern: ^[a-z0-9]+[a-z0-9-]+$
-          title: Name
-        reference_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reference Domain
-      type: object
-      required:
-      - name
-      title: CreateDomainInput
-    RemoveDomainOrganisationInput:
-      properties:
-        organisation_name:
-          type: string
-          title: Organisation Name
-      type: object
-      required:
-      - organisation_name
-      title: RemoveDomainOrganisationInput
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-        input:
-          title: Input
-        ctx:
-          type: object
-          title: Context
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-      title: ValidationError
-    Page_Domain_:
-      properties:
-        items:
-          items:
-            $ref: '#/components/schemas/Domain'
-          type: array
-          title: Items
-        total:
-          type: integer
-          minimum: 0.0
-          title: Total
-        page:
-          type: integer
-          minimum: 1.0
-          title: Page
-        size:
-          type: integer
-          minimum: 1.0
-          title: Size
-        pages:
-          type: integer
-          minimum: 0.0
-          title: Pages
-      type: object
-      required:
-      - items
-      - total
-      - page
-      - size
-      - pages
-      title: Page[Domain]
-    Domain:
-      properties:
-        id:
-          type: string
-          format: uuid
-          title: Id
-        created_at:
-          type: string
-          format: date-time
-          title: Created At
-        updated_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          title: Updated At
-        name:
-          type: string
-          title: Name
-        display_name:
-          type: string
-          title: Display Name
-        is_domain:
-          type: boolean
-          title: Is Domain
-        system_type:
-          anyOf:
-          - $ref: '#/components/schemas/SystemTypes'
-          - type: 'null'
-        organisations:
-          items:
-            $ref: '#/components/schemas/Organisation'
-          type: array
-          title: Organisations
-        reference_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-          title: Reference Domain
-      type: object
-      required:
-      - name
-      - display_name
-      - is_domain
-      - organisations
-      title: Domain
-    OrganisationName:
-      properties:
-        name:
-          type: string
-          maxLength: 40
-          minLength: 3
-          pattern: ^[a-z0-9]+[a-z0-9-]+$
-          title: Name
-      type: object
-      required:
-      - name
-      title: OrganisationName
+    SystemTypes:
+      type: string
+      enum:
+      - ensure
+      - build
+      - dpp
+      - see
+      title: SystemTypes
   securitySchemes:
     OAuth2AuthorizationCodeBearer:
       type: oauth2
