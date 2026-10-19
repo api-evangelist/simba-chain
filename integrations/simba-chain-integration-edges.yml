@@ -1,0 +1,154 @@
+edges:
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.simbachain/libsimba4j
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.simbachain:libsimba4j
+      version: 0.1.13
+      released: '2021-09-08'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.simbachain/libsimba4j
+      repo_leg: github-org:simbachain
+      publisher_leg: groupId:simbachain.com
+      matched_by: domain
+    - name: com.simbachain:libsimba4j-platform
+      version: 1.0.9
+      released: '2025-08-20'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.simbachain/libsimba4j-platform
+      repo_leg: github-org:simbachain
+      publisher_leg: groupId:simbachain.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@simbachain/hardhat
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@simbachain/hardhat'
+      version: 5.2.0
+      released: '2025-09-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@simbachain/hardhat
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    - name: '@simbachain/libsimba-js'
+      version: 0.5.8
+      released: '2025-09-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@simbachain/libsimba-js
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    - name: '@simbachain/simbats'
+      version: 1.1.0
+      released: '2025-09-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@simbachain/simbats
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    - name: '@simbachain/truffle'
+      version: 6.1.0
+      released: '2025-09-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@simbachain/truffle
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    - name: '@simbachain/web3-suites'
+      version: 5.2.0
+      released: '2025-09-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@simbachain/web3-suites
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Python)
+  evidence: https://pypi.org/project/simba-sdk/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: simba-sdk
+      version: 1.3.7
+      released: '2026-01-22'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/simba-sdk/
+      repo_leg: github-org:simbachain
+      publisher_leg: email:simbachain.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+generated: '2026-10-18'
+method: searched
+source:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
+checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
