@@ -161,6 +161,30 @@ edges:
     detected: '2026-10-20'
   detected_by: sweep-ide-extension-marketplaces.py
   first_seen: '2026-10-20'
+- partner_name: Battery Pass consortium (BatteryPass-Ready)
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://thebatterypass.eu/battery-pass-ready/
+  category: battery passport consortium participation
+  contract_reference:
+    register: Battery Pass / BatteryPass-Ready partners (thebatterypass.eu/battery-pass-ready/)
+    standard: EU Battery Passport (Battery Regulation 2023/1542) content and data model
+    spec_file: null
+    role: batterypass-partner-network
+    registered_name: SIMBA Chain
+    register_id: https://simbachain.com/
+    matched_domain: simbachain.com
+    matched_by: domain
+    signal_note: 'participation only: partner of the BatteryPass-Ready project (each logo links the partner''s own
+      site); listing is not conformance'
+    detected_by: sweep-electronics-recycling-circular.py
+    detected: '2026-10-21'
+  detected_by: sweep-electronics-recycling-circular.py
+  first_seen: '2026-10-21'
 generated: '2026-10-18'
 method: searched
 source:
@@ -181,3 +205,12 @@ checked:
 - https://rubygems.org/api/v1
 - https://pypi.org/org/{org}/
 - https://pypi.org/pypi/{package}/json
+- https://batterynetwork.org/stewards/compliant-stewards/
+- https://e-stewards.org/find-a-recycler/
+- https://sustainableelectronics.org/find-an-r2-certified-facility/
+- https://thebatterypass.eu/battery-pass-ready/
+- https://www.call2recycle.org/
+- https://www.ellenmacarthurfoundation.org/network/members
+- https://www.ellenmacarthurfoundation.org/network/who-is-in-the-network
+- https://www.globalbattery.org/about/members/
+- https://www.globalbattery.org/members/

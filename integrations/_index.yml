@@ -169,3 +169,27 @@
     detected: '2026-10-20'
   status: not-a-workflow
   arazzo: null
+- slug: simba-chain-battery-pass-consortium-batterypass-ready
+  label: Battery Pass consortium (BatteryPass-Ready)
+  partner_name: Battery Pass consortium (BatteryPass-Ready)
+  category: battery passport consortium participation
+  type: register
+  channel: standard-directory
+  evidence: https://thebatterypass.eu/battery-pass-ready/
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: Battery Pass / BatteryPass-Ready partners (thebatterypass.eu/battery-pass-ready/)
+    standard: EU Battery Passport (Battery Regulation 2023/1542) content and data model
+    spec_file: null
+    role: batterypass-partner-network
+    registered_name: SIMBA Chain
+    register_id: https://simbachain.com/
+    matched_domain: simbachain.com
+    matched_by: domain
+    signal_note: 'participation only: partner of the BatteryPass-Ready project (each logo links the partner''s own
+      site); listing is not conformance'
+    detected_by: sweep-electronics-recycling-circular.py
+    detected: '2026-10-21'
+  status: not-a-workflow
+  arazzo: null
